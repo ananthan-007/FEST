@@ -1,0 +1,124 @@
+@import url('https://fonts.googleapis.com/css2?family=Cinzel:wght@400;600;700;800;900&family=EB+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,500;1,600&family=Inter:wght@300;400;500;600;700;800&family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200&display=swap');
+
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #050A18;
+  --foreground: #DDE2F6;
+}
+
+body {
+  color: var(--foreground);
+  background-color: var(--background);
+  font-family: 'Inter', system-ui, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Subtle mesh gradient background */
+.bg-space-dark {
+  background-color: #050A18;
+  background-image: 
+    radial-gradient(circle at 50% 12%, rgba(200, 16, 46, 0.18) 0%, transparent 45%),
+    radial-gradient(circle at 10% 85%, rgba(28, 37, 65, 0.35) 0%, transparent 40%),
+    radial-gradient(circle at 90% 80%, rgba(200, 16, 46, 0.12) 0%, transparent 35%);
+}
+
+/* Refined Liquid-Glass Panel Styles */
+.glass-panel {
+  background: rgba(8, 16, 36, 0.65);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 16px 36px 0 rgba(0, 0, 0, 0.55), inset 0 1px 0 0 rgba(255, 255, 255, 0.12);
+}
+
+.glass-pill {
+  background: rgba(6, 12, 28, 0.72);
+  backdrop-filter: blur(18px);
+  -webkit-backdrop-filter: blur(18px);
+  border: 1px solid rgba(255, 255, 255, 0.12);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.6), inset 0 1px 1px rgba(255, 255, 255, 0.2);
+}
+
+/* Ambient pulse glow for button */
+.crimson-glow {
+  box-shadow: 0 0 25px rgba(200, 16, 46, 0.45);
+}
+
+.crimson-glow:hover {
+  box-shadow: 0 0 35px rgba(200, 16, 46, 0.65);
+}
+
+/* Dynamic crimson-to-ice gradient for middle hero keyword */
+.gradient-word {
+  background: linear-gradient(180deg, #FFFFFF 0%, #FF8A9B 45%, #C8102E 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  text-shadow: 0 0 35px rgba(200, 16, 46, 0.5);
+}
+
+/* Monospace style for timer numbers */
+.font-num {
+  font-feature-settings: "tnum";
+  font-variant-numeric: tabular-nums;
+}
+
+/* Perforated scalloped ticket-stub with circular side cutouts matching Asthra / FEST reference */
+.perforated-ticket {
+  position: relative;
+  background: linear-gradient(180deg, #111A33 0%, #0D1428 65%, #090E1C 100%);
+  border: 1px solid rgba(255, 179, 177, 0.22);
+  box-shadow: 0 16px 40px rgba(0, 0, 0, 0.65), 0 0 35px rgba(200, 16, 46, 0.18);
+  mask-image: radial-gradient(circle 14px at 0% 74%, transparent 13px, black 14px),
+              radial-gradient(circle 14px at 100% 74%, transparent 13px, black 14px);
+  -webkit-mask-image: radial-gradient(circle 14px at 0% 74%, transparent 13px, black 14px),
+                      radial-gradient(circle 14px at 100% 74%, transparent 13px, black 14px);
+}
+
+.details-capsule {
+  background: linear-gradient(180deg, rgba(11, 19, 43, 0.94) 0%, rgba(6, 11, 24, 0.98) 100%);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 0 20px 50px rgba(0, 0, 0, 0.7);
+}
+
+/* Subtle tactical grid background pattern */
+.tactical-mesh {
+  background-image: 
+    linear-gradient(rgba(200, 16, 46, 0.035) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(200, 16, 46, 0.035) 1px, transparent 1px);
+  background-size: 24px 24px;
+}
+
+@keyframes scanSweep {
+  0% {
+    top: 5%;
+  }
+  100% {
+    top: 90%;
+  }
+}
+
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+.no-scrollbar {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}
+@keyframes marquee-scroll {
+  0%   { transform: translateX(0); }
+  100% { transform: translateX(-50%); }
+}
+
+.marquee-track {
+  display: flex;
+  gap: 1rem;
+  width: max-content;
+  animation: marquee-scroll 30s linear infinite;
+}
+
+.marquee-track:hover {
+  animation-play-state: paused;
+}
