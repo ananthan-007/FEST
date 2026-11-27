@@ -15,7 +15,7 @@ export default function VolunteerLayout({
         <div className="max-w-6xl mx-auto px-4 h-16 flex items-center justify-between gap-4">
           <div className="flex items-center gap-3">
             <Link href="/" className="flex items-center gap-2 group">
-              <DhruvaLogo size="xs" />
+              <DhruvaLogo size="xs" showGlow={false} />
               <span className="font-serif text-sm sm:text-base font-bold tracking-[0.2em] gold-gradient-text">
                 DHRUVA
               </span>

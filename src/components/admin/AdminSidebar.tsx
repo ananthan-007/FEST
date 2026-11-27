@@ -53,7 +53,7 @@ export default function AdminSidebar({ children }: { children: React.ReactNode }
         <div className="flex items-center justify-between">
           <Link href="/" className="flex items-center gap-3 group">
             <div className="w-9 h-9 rounded-xl bg-[#12110F] border border-[#64401F]/60 flex items-center justify-center overflow-hidden">
-              <DhruvaLogo size="xs" />
+              <DhruvaLogo size="xs" showGlow={false} />
             </div>
             <div>
               <p className="font-serif text-base gold-gradient-text tracking-widest leading-none">

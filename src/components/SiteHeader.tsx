@@ -184,7 +184,7 @@ export default function SiteHeader() {
           className="flex items-center gap-2.5 group shrink-0"
         >
           <div className="relative flex items-center justify-center w-10 h-10 rounded-xl bg-[#0D0C0A] border border-[#64401F]/60 group-hover:border-[#E3B464]/70 transition-colors overflow-hidden">
-            <DhruvaLogo size="sm" />
+            <DhruvaLogo size="sm" showGlow={false} />
           </div>
           <div className="flex flex-col">
             <span className="font-serif text-sm sm:text-base font-bold tracking-[0.22em] gold-gradient-text leading-none">

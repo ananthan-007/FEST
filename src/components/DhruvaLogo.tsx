@@ -6,6 +6,7 @@ import { cn } from '@/lib/utils'
 
 interface DhruvaLogoProps {
   size?: 'xs' | 'sm' | 'md' | 'lg' | 'xl'
+  showGlow?: boolean
   className?: string
   priority?: boolean
 }
@@ -20,6 +21,7 @@ const sizeMap = {
 
 export default function DhruvaLogo({
   size = 'md',
+  showGlow = true,
   className,
   priority = false,
 }: DhruvaLogoProps) {
@@ -33,13 +35,19 @@ export default function DhruvaLogo({
         className
       )}
     >
+      {showGlow && (
+        <div
+          aria-hidden="true"
+          className="absolute inset-1 rounded-full bg-[radial-gradient(circle,rgba(227,180,100,0.38)_0%,rgba(204,137,47,0.16)_45%,transparent_72%)] blur-xl pointer-events-none"
+        />
+      )}
       <Image
         src="/images/dhruva-logo.jpg"
         alt="DHRUVA NCC Fest Logo"
         width={px}
         height={px}
         priority={priority}
-        className="w-full h-full object-contain rounded-xl mix-blend-lighten"
+        className="relative z-10 w-full h-full object-contain rounded-xl mix-blend-lighten drop-shadow-[0_0_18px_rgba(204,137,47,0.35)]"
       />
     </div>
   )

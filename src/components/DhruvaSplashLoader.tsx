@@ -33,6 +33,14 @@ export default function DhruvaSplashLoader() {
           className="fixed inset-0 z-[100] flex flex-col items-center justify-center bg-[#050505] px-6 overflow-hidden"
           aria-label="Loading DHRUVA"
         >
+          {/* Ambient radial golden aura */}
+          <motion.div
+            initial={{ opacity: 0, scale: 0.7 }}
+            animate={{ opacity: [0.35, 0.8, 0.5], scale: [0.9, 1.15, 1] }}
+            transition={{ duration: 1.4, ease: 'easeOut' }}
+            className="absolute w-[340px] h-[340px] rounded-full bg-[radial-gradient(circle,rgba(227,180,100,0.22)_0%,rgba(129,80,31,0.12)_45%,transparent_70%)] blur-2xl pointer-events-none"
+          />
+
           {/* Rotating geometric diamond frame behind logo */}
           <div className="relative flex items-center justify-center">
             <motion.div
@@ -54,7 +62,7 @@ export default function DhruvaSplashLoader() {
               animate={{ opacity: 1, scale: 1, y: 0 }}
               transition={{ duration: 0.75, ease: [0.22, 1, 0.36, 1] }}
             >
-              <DhruvaLogo size="xl" priority />
+              <DhruvaLogo size="xl" priority showGlow />
             </motion.div>
           </div>
 

@@ -22,6 +22,10 @@ export default function HomePage() {
 
         {/* ── HERO ─────────────────────────────────────────────────────────── */}
         <section className="relative min-h-screen flex flex-col items-center justify-center px-4 pt-24 pb-16 overflow-hidden">
+          <div className="absolute inset-0 pointer-events-none">
+            <div className="absolute top-1/3 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[560px] h-[560px] rounded-full bg-[#CC892F]/10 blur-[130px]" />
+          </div>
+
           <motion.div
             initial={{ opacity: 0, y: 28 }}
             animate={{ opacity: 1, y: 0 }}
@@ -34,7 +38,7 @@ export default function HomePage() {
                 transition={{ duration: 48, repeat: Infinity, ease: 'linear' }}
                 className="absolute w-44 h-44 sm:w-52 sm:h-52 rounded-3xl border border-[#CC892F]/25 rotate-45 pointer-events-none"
               />
-              <DhruvaLogo size="xl" priority />
+              <DhruvaLogo size="xl" priority showGlow />
             </div>
 
             <div className="text-center">

@@ -12,7 +12,7 @@ export default function SiteFooter() {
       >
         <div className="max-w-7xl mx-auto flex flex-col md:flex-row items-start md:items-center justify-between gap-6 pb-6 border-b border-[#3A291B]/50">
           <div className="flex items-center gap-2.5">
-            <DhruvaLogo size="sm" />
+            <DhruvaLogo size="sm" showGlow={false} />
             <div>
               <span className="font-serif font-black text-base tracking-[0.24em] gold-gradient-text block">
                 DHRUVA

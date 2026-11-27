@@ -12,7 +12,7 @@ export default function Loading() {
           animate={{ scale: [1, 1.05, 1], opacity: [0.85, 1, 0.85] }}
           transition={{ duration: 1.8, repeat: Infinity, ease: 'easeInOut' }}
         >
-          <DhruvaLogo size="lg" priority />
+          <DhruvaLogo size="lg" priority showGlow />
         </motion.div>
 
         <div className="w-40 h-[2px] rounded-full bg-[#242321] overflow-hidden">

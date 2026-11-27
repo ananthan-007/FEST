@@ -78,6 +78,10 @@ export default function CategoryFilterPage({ events }: Props) {
 
       {/* ── HERO BANNER ─────────────────────────────────────────────────── */}
       <section className="relative pt-20 pb-10 overflow-hidden">
+        <div className="absolute inset-0 pointer-events-none">
+          <div className="absolute top-0 left-1/2 -translate-x-1/2 w-[700px] h-[400px] rounded-full bg-[#CC892F]/12 blur-[120px]" />
+        </div>
+
         <ScrollReveal className="relative z-10 flex flex-col items-center pt-8 pb-5 px-4">
           <DhruvaLogo size="md" className="mb-3" />
 
