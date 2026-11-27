@@ -14,7 +14,7 @@ export async function GET() {
       id, title, description, poster_url, event_date, event_time,
       venue, fee, participation_type, eligible_divisions,
       team_min, team_max, team_fixed, institution_restriction,
-      conflict_alert_enabled, subcategory_id, created_at,
+      conflict_alert_enabled, is_active, subcategory_id, created_at,
       sub_categories (
         id,
         name,

@@ -51,9 +51,9 @@ const divisionColors: Record<Division, string> = {
   JW: 'bg-pink-500/15 border-pink-500/30 text-pink-400',
 }
 
-const inputCls = 'h-12 w-full bg-[#161B2A] border border-white/10 rounded-lg px-3 text-[#DDE2F6] text-sm focus:outline-none focus:ring-1 focus:ring-[#C8102E] placeholder:text-[#8A94A8]/60'
-const labelCls = 'block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8] mb-1.5'
-const cardCls = 'bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl p-6 space-y-5'
+const inputCls = 'h-12 w-full bg-[#141311] border border-[#3A291B]/90 rounded-lg px-3 text-[#F5EFE6] text-sm focus:outline-none focus:ring-1 focus:ring-[#CC892F] placeholder:text-[#A89F91]/60'
+const labelCls = 'block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91] mb-1.5'
+const cardCls = 'bg-[#0D0C0A]/80 backdrop-blur-xl border border-[#3A291B]/80 rounded-2xl p-6 space-y-5'
 
 export default function EventForm({ eventId, initialData }: EventFormProps) {
   const router = useRouter()
@@ -63,13 +63,24 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
   const [description, setDescription] = useState(initialData?.description ?? '')
   const [posterUrl, setPosterUrl] = useState(initialData?.poster_url ?? '')
   const [posterFile, setPosterFile] = useState<File | null>(null)
-  const [categoryId, setCategoryId] = useState(initialData?.category_id ?? '')
-  const [subCategoryId, setSubCategoryId] = useState(initialData?.sub_category_id ?? '')
-  const [dateTime, setDateTime] = useState(
-    initialData?.date_time ? new Date(initialData.date_time).toISOString().slice(0, 16) : ''
+  const [categoryId, setCategoryId] = useState(
+    initialData?.category_id ?? initialData?.sub_categories?.category_id ?? ''
   )
+  const [subCategoryId, setSubCategoryId] = useState(
+    initialData?.sub_category_id ?? initialData?.subcategory_id ?? ''
+  )
+  const [dateTime, setDateTime] = useState(() => {
+    if (initialData?.date_time) {
+      return new Date(initialData.date_time).toISOString().slice(0, 16)
+    }
+    if (initialData?.event_date) {
+      const timePart = initialData.event_time ? initialData.event_time.slice(0, 5) : '09:00'
+      return `${initialData.event_date}T${timePart}`
+    }
+    return ''
+  })
   const [venue, setVenue] = useState(initialData?.venue ?? '')
-  const [fee, setFee] = useState<number>(initialData?.fee ?? 0)
+  const [fee, setFee] = useState<number>(Number(initialData?.fee ?? 0))
   const [participationType, setParticipationType] = useState<'individual' | 'team'>(
     initialData?.participation_type ?? 'individual'
   )
@@ -87,11 +98,11 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
   const [prizePools, setPrizePools] = useState<PrizePoolGroup[]>(
     (initialData?.prize_pool_groups ?? []).map((p: any) => ({
       id: p.id,
-      label: p.label,
-      divisions: p.divisions,
-      first_prize: Number(p.first_prize),
-      second_prize: Number(p.second_prize),
-      third_prize: Number(p.third_prize),
+      label: p.label ?? p.name ?? '',
+      divisions: p.divisions ?? [],
+      first_prize: Number(p.first_prize ?? p.prize_1st ?? 0),
+      second_prize: Number(p.second_prize ?? p.prize_2nd ?? 0),
+      third_prize: Number(p.third_prize ?? p.prize_3rd ?? 0),
     }))
   )
 
@@ -266,7 +277,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
     <form onSubmit={handleSubmit} className="space-y-5 max-w-3xl">
       {/* Error banner */}
       {error && (
-        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] text-sm">
+        <div className="flex items-center gap-3 px-4 py-3 rounded-xl bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F] text-sm">
           <span className="material-symbols-outlined text-base">error</span>
           {error}
         </div>
@@ -274,9 +285,9 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
 
       {/* ── Basic Info ─────────────────────────────────────────────────────── */}
       <section className={cardCls}>
-        <div className="flex items-center gap-2 pb-1 border-b border-white/5">
-          <span className="material-symbols-outlined text-[#C8102E] text-lg">info</span>
-          <h2 className="font-serif text-base text-[#DDE2F6]">Basic Information</h2>
+        <div className="flex items-center gap-2 pb-1 border-b border-[#3A291B]/60">
+          <span className="material-symbols-outlined text-[#CC892F] text-lg">info</span>
+          <h2 className="font-serif text-base text-[#F5EFE6]">Basic Information</h2>
         </div>
 
         <div>
@@ -330,7 +341,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
             rows={5}
             value={description}
             onChange={e => setDescription(e.target.value)}
-            className="w-full bg-[#161B2A] border border-white/10 rounded-xl px-4 py-3 text-[#DDE2F6] text-sm focus:outline-none focus:ring-1 focus:ring-[#C8102E] placeholder:text-[#8A94A8]/60 resize-none"
+            className="w-full bg-[#141311] border border-[#3A291B]/90 rounded-xl px-4 py-3 text-[#F5EFE6] text-sm focus:outline-none focus:ring-1 focus:ring-[#CC892F] placeholder:text-[#A89F91]/60 resize-none"
             placeholder="Event description, rules, guidelines…"
           />
         </div>
@@ -373,11 +384,11 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
           <label className={labelCls}>Event Poster</label>
           {posterUrl && (
             <div className="mb-3">
-              <img src={posterUrl} alt="Poster preview" className="h-24 rounded-xl object-cover border border-white/10" />
+              <img src={posterUrl} alt="Poster preview" className="h-24 rounded-xl object-cover border border-[#3A291B]/90" />
             </div>
           )}
-          <label className="inline-flex items-center gap-2 h-10 px-4 bg-white/5 border border-white/10 rounded-full text-xs text-[#DDE2F6] cursor-pointer hover:bg-white/10 transition">
-            <span className="material-symbols-outlined text-base text-[#8A94A8]">upload</span>
+          <label className="inline-flex items-center gap-2 h-10 px-4 bg-white/5 border border-[#3A291B]/90 rounded-full text-xs text-[#F5EFE6] cursor-pointer hover:bg-white/10 transition">
+            <span className="material-symbols-outlined text-base text-[#A89F91]">upload</span>
             Choose image
             <input
               type="file"
@@ -393,7 +404,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
             />
           </label>
           {uploading && (
-            <p className="text-xs text-[#FFB3B1] mt-2 flex items-center gap-1.5">
+            <p className="text-xs text-[#F4DD9F] mt-2 flex items-center gap-1.5">
               <span className="animate-spin material-symbols-outlined text-sm">progress_activity</span>
               Uploading poster…
             </p>
@@ -403,9 +414,9 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
 
       {/* ── Participation ───────────────────────────────────────────────────── */}
       <section className={cardCls}>
-        <div className="flex items-center gap-2 pb-1 border-b border-white/5">
-          <span className="material-symbols-outlined text-[#C8102E] text-lg">groups</span>
-          <h2 className="font-serif text-base text-[#DDE2F6]">Participation</h2>
+        <div className="flex items-center gap-2 pb-1 border-b border-[#3A291B]/60">
+          <span className="material-symbols-outlined text-[#CC892F] text-lg">groups</span>
+          <h2 className="font-serif text-base text-[#F5EFE6]">Participation</h2>
         </div>
 
         <div>
@@ -416,8 +427,8 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
                 key={type}
                 className={`flex items-center gap-2 h-10 px-4 rounded-full border cursor-pointer transition text-sm font-medium capitalize ${
                   participationType === type
-                    ? 'bg-[#C8102E]/15 border-[#C8102E]/40 text-[#FFB3B1]'
-                    : 'bg-white/5 border-white/10 text-[#8A94A8] hover:bg-white/10'
+                    ? 'bg-[#CC892F]/15 border-[#CC892F]/40 text-[#F4DD9F]'
+                    : 'bg-white/5 border-[#3A291B]/90 text-[#A89F91] hover:bg-white/10'
                 }`}
               >
                 <input
@@ -473,7 +484,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
                 className={`inline-flex items-center h-8 px-3 rounded-full border text-xs font-bold tracking-wider transition ${
                   eligibleDivisions.includes(div)
                     ? divisionColors[div]
-                    : 'bg-white/5 border-white/10 text-[#8A94A8] hover:bg-white/10'
+                    : 'bg-white/5 border-[#3A291B]/90 text-[#A89F91] hover:bg-white/10'
                 }`}
               >
                 {div}
@@ -500,13 +511,13 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
             onClick={() => setConflictAlertEnabled(!conflictAlertEnabled)}
             className={`relative w-10 h-6 rounded-full border transition ${
               conflictAlertEnabled
-                ? 'bg-[#C8102E]/30 border-[#C8102E]/50'
-                : 'bg-white/5 border-white/10'
+                ? 'bg-[#CC892F]/30 border-[#CC892F]/50'
+                : 'bg-white/5 border-[#3A291B]/90'
             }`}
           >
             <span
               className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full transition-transform ${
-                conflictAlertEnabled ? 'translate-x-4 bg-[#C8102E]' : 'bg-[#8A94A8]'
+                conflictAlertEnabled ? 'translate-x-4 bg-[#CC892F]' : 'bg-[#A89F91]'
               }`}
             />
           </div>
@@ -516,7 +527,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
             onChange={e => setConflictAlertEnabled(e.target.checked)}
             className="sr-only"
           />
-          <span className="text-sm text-[#DDE2F6]/80 group-hover:text-[#DDE2F6] transition">
+          <span className="text-sm text-[#F5EFE6]/80 group-hover:text-[#F5EFE6] transition">
             Enable conflict alert (parallel events)
           </span>
         </label>
@@ -524,15 +535,15 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
 
       {/* ── Prize Pools ─────────────────────────────────────────────────────── */}
       <section className={cardCls}>
-        <div className="flex items-center justify-between pb-1 border-b border-white/5">
+        <div className="flex items-center justify-between pb-1 border-b border-[#3A291B]/60">
           <div className="flex items-center gap-2">
-            <span className="material-symbols-outlined text-[#C8102E] text-lg">emoji_events</span>
-            <h2 className="font-serif text-base text-[#DDE2F6]">Prize Pools</h2>
+            <span className="material-symbols-outlined text-[#CC892F] text-lg">emoji_events</span>
+            <h2 className="font-serif text-base text-[#F5EFE6]">Prize Pools</h2>
           </div>
           <button
             type="button"
             onClick={addPrizePool}
-            className="inline-flex items-center gap-1.5 h-8 px-3 bg-white/5 border border-white/10 rounded-full text-xs text-[#ADC6FF] hover:bg-white/10 transition"
+            className="inline-flex items-center gap-1.5 h-8 px-3 bg-white/5 border border-[#3A291B]/90 rounded-full text-xs text-[#E3B464] hover:bg-white/10 transition"
           >
             <span className="material-symbols-outlined text-sm">add</span>
             Add Pool Group
@@ -540,25 +551,25 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
         </div>
 
         {prizePools.length === 0 && (
-          <p className="text-xs text-[#8A94A8]/60 py-4 text-center">
+          <p className="text-xs text-[#A89F91]/60 py-4 text-center">
             No prize pools configured. Click above to add one.
           </p>
         )}
 
         {prizePools.map((pool, index) => (
-          <div key={index} className="bg-[#161B2A] border border-white/8 rounded-xl p-4 space-y-4">
+          <div key={index} className="bg-[#141311] border border-[#3A291B]/80 rounded-xl p-4 space-y-4">
             <div className="flex items-center gap-3">
               <input
                 type="text"
                 placeholder="Group label (e.g. Senior, SD+SW)"
                 value={pool.label}
                 onChange={e => updatePrizePool(index, { label: e.target.value })}
-                className="h-9 flex-1 bg-[#0D1321] border border-white/10 rounded-lg px-3 text-sm text-[#DDE2F6] placeholder:text-[#8A94A8]/60 focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                className="h-9 flex-1 bg-[#0D0C0A] border border-[#3A291B]/90 rounded-lg px-3 text-sm text-[#F5EFE6] placeholder:text-[#A89F91]/60 focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
               />
               <button
                 type="button"
                 onClick={() => removePrizePool(index)}
-                className="inline-flex items-center gap-1 h-8 px-3 bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#C8102E]/25 transition"
+                className="inline-flex items-center gap-1 h-8 px-3 bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#CC892F]/25 transition"
               >
                 <span className="material-symbols-outlined text-sm">close</span>
                 Remove
@@ -576,7 +587,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
                     className={`inline-flex items-center h-7 px-3 rounded-full border text-[10px] font-bold tracking-wider transition ${
                       pool.divisions.includes(div)
                         ? divisionColors[div]
-                        : 'bg-white/5 border-white/10 text-[#8A94A8] hover:bg-white/10'
+                        : 'bg-white/5 border-[#3A291B]/90 text-[#A89F91] hover:bg-white/10'
                     }`}
                   >
                     {div}
@@ -584,7 +595,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
                 ))}
               </div>
               {pool.error && (
-                <p className="text-xs text-[#FFB3B1] mt-1.5 flex items-center gap-1">
+                <p className="text-xs text-[#F4DD9F] mt-1.5 flex items-center gap-1">
                   <span className="material-symbols-outlined text-sm">warning</span>
                   {pool.error}
                 </p>
@@ -602,7 +613,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
                     min={0}
                     value={pool[field]}
                     onChange={e => updatePrizePool(index, { [field]: Number(e.target.value) })}
-                    className="h-10 w-full bg-[#0D1321] border border-white/10 rounded-lg px-3 text-sm text-[#DDE2F6] font-mono focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                    className="h-10 w-full bg-[#0D0C0A] border border-[#3A291B]/90 rounded-lg px-3 text-sm text-[#F5EFE6] font-mono focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                   />
                 </div>
               ))}
@@ -616,7 +627,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
         <button
           type="submit"
           disabled={submitting}
-          className="h-12 px-8 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-sm font-semibold uppercase tracking-wider shadow-[0_0_20px_rgba(200,16,46,0.4)] disabled:opacity-50 transition flex items-center gap-2"
+          className="h-12 px-8 gold-gradient-button rounded-full text-sm font-semibold uppercase tracking-wider shadow-[0_0_20px_rgba(204,137,47,0.4)] disabled:opacity-50 transition flex items-center gap-2"
         >
           {submitting ? (
             <>
@@ -635,7 +646,7 @@ export default function EventForm({ eventId, initialData }: EventFormProps) {
         <button
           type="button"
           onClick={() => router.back()}
-          className="h-12 px-6 bg-white/5 border border-white/10 text-[#DDE2F6] rounded-full text-sm font-medium hover:bg-white/10 transition"
+          className="h-12 px-6 bg-white/5 border border-[#3A291B]/90 text-[#F5EFE6] rounded-full text-sm font-medium hover:bg-white/10 transition"
         >
           Cancel
         </button>

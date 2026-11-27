@@ -51,6 +51,10 @@ export async function POST(req: Request) {
       return NextResponse.json({ error: 'Event not found' }, { status: 404 })
     }
 
+    if (event.is_active === false) {
+      return NextResponse.json({ error: 'Registration for this event is currently closed.' }, { status: 422 })
+    }
+
     // 4. Fest-wide deadline enforcement
     const { data: setting } = await adminClient
       .from('app_settings')

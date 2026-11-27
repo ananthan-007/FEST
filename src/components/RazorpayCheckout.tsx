@@ -69,7 +69,7 @@ export default function RazorpayCheckout({
       key: razorpayKey || process.env.NEXT_PUBLIC_RAZORPAY_KEY_ID || '',
       amount: amount,
       currency: currency,
-      name: 'NCC Fest',
+      name: 'DHRUVA · Kerala NCC Fest',
       description: `Registration #${registrationId}`,
       order_id: orderId,
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -83,7 +83,7 @@ export default function RazorpayCheckout({
         },
       },
       theme: {
-        color: '#1e3a8a', // Deep navy / NCC blue
+        color: '#CC892F', // DHRUVA Rich Golden Amber
       },
     }
 
@@ -104,7 +104,7 @@ export default function RazorpayCheckout({
       disabled={loading || !scriptLoaded}
       className={
         className ||
-        'w-full py-3 px-6 rounded-lg font-semibold text-white bg-blue-600 hover:bg-blue-700 transition disabled:opacity-50 shadow-md flex items-center justify-center gap-2'
+        'w-full h-12 px-6 rounded-full font-bold text-xs uppercase tracking-wider gold-gradient-button transition disabled:opacity-50 flex items-center justify-center gap-2'
       }
     >
       {loading ? (

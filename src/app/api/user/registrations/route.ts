@@ -18,9 +18,9 @@ export async function GET() {
     const { data: leaderRegs, error: leaderErr } = await adminClient
       .from('registrations')
       .select(`
-        *,
-        events (*),
-        registration_members (*)
+        id, team_name, participation_type, payment_status, created_at,
+        events ( id, title, event_date, venue ),
+        registration_members ( id )
       `)
       .eq('leader_id', user.id)
       .order('created_at', { ascending: false })
@@ -32,9 +32,9 @@ export async function GET() {
       .from('registration_members')
       .select(`
         registrations (
-          *,
-          events (*),
-          registration_members (*)
+          id, team_name, participation_type, payment_status, created_at,
+          events ( id, title, event_date, venue ),
+          registration_members ( id )
         )
       `)
       .eq('user_id', user.id)
@@ -52,7 +52,12 @@ export async function GET() {
       }
     }
 
-    return NextResponse.json(registrations)
+    const normalized = registrations.map((r) => ({
+      ...r,
+      event: r.events ?? null,
+    }))
+
+    return NextResponse.json(normalized)
   } catch (err: any) {
     console.error('[GET /api/user/registrations]', err)
     return NextResponse.json({ error: 'Internal server error' }, { status: 500 })

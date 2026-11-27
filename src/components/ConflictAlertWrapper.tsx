@@ -3,6 +3,8 @@
 import { useState } from 'react'
 import Link from 'next/link'
 import { useRouter } from 'next/navigation'
+import { AlertTriangle, ArrowRight } from 'lucide-react'
+import { Button } from '@/components/ui/button'
 
 interface Props {
   eventId: string
@@ -16,27 +18,26 @@ export default function ConflictAlertWrapper({ eventId, conflictAlertEnabled, us
 
   if (!conflictAlertEnabled) {
     return (
-      <Link
-        href={`/register/${eventId}`}
-        className="flex items-center justify-center h-14 w-full bg-[#C8102E] hover:bg-[#A00B22] text-white font-bold rounded-full shadow-[0_0_24px_rgba(200,16,46,0.4)] transition text-xs uppercase tracking-wider gap-2"
-      >
-        <span>Register Now</span>
-        <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+      <Link href={`/register/${eventId}`} className="block">
+        <Button size="lg" className="w-full h-14">
+          <span>Register Now</span>
+          <ArrowRight className="w-4 h-4" />
+        </Button>
       </Link>
     )
   }
 
   return (
     <>
-      <button
+      <Button
         onClick={() => setModalOpen(true)}
-        className="flex items-center justify-center h-14 w-full bg-[#C8102E] hover:bg-[#A00B22] text-white font-bold rounded-full shadow-[0_0_24px_rgba(200,16,46,0.4)] transition text-xs uppercase tracking-wider gap-2"
+        size="lg"
+        className="w-full h-14"
       >
         <span>Register Now</span>
-        <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
-      </button>
+        <ArrowRight className="w-4 h-4" />
+      </Button>
 
-      {/* Conflict Alert Modal */}
       {modalOpen && (
         <div
           className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md px-4"
@@ -44,40 +45,35 @@ export default function ConflictAlertWrapper({ eventId, conflictAlertEnabled, us
           aria-modal="true"
           aria-labelledby="conflict-modal-title"
         >
-          <div className="bg-[#0D1321] border border-amber-500/30 rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-7 space-y-5">
-            {/* Header */}
+          <div className="bg-[#0D0C0A] border border-[#CC892F]/50 rounded-2xl shadow-2xl max-w-md w-full p-6 sm:p-7 space-y-5">
             <div className="flex items-start gap-4">
-              <div className="w-12 h-12 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center shrink-0">
-                <span className="material-symbols-outlined text-2xl">warning</span>
+              <div className="w-12 h-12 rounded-full bg-[#CC892F]/15 border border-[#CC892F]/40 text-[#E3B464] flex items-center justify-center shrink-0">
+                <AlertTriangle className="w-6 h-6" />
               </div>
               <div>
-                <h2 id="conflict-modal-title" className="text-lg font-serif text-[#DDE2F6]">
+                <h2 id="conflict-modal-title" className="text-lg font-serif text-[#F4DD9F]">
                   Schedule Conflict Notice
                 </h2>
-                <p className="text-xs text-[#8A94A8] mt-2 leading-relaxed">
+                <p className="text-xs text-[#A89F91] mt-2 leading-relaxed">
                   This operation may overlap with other deployments you have registered for. Concurrent
                   scheduling may prevent simultaneous participation.
                 </p>
               </div>
             </div>
 
-            {/* Actions */}
-            <div className="flex gap-3 justify-end pt-2 border-t border-white/5">
-              <button
-                onClick={() => setModalOpen(false)}
-                className="h-10 px-5 rounded-full border border-white/10 text-xs font-semibold text-[#8A94A8] hover:text-[#DDE2F6] hover:bg-white/5 transition"
-              >
+            <div className="flex gap-3 justify-end pt-2 border-t border-[#3A291B]/70">
+              <Button variant="outline" size="sm" onClick={() => setModalOpen(false)}>
                 Abort
-              </button>
-              <button
+              </Button>
+              <Button
+                size="sm"
                 onClick={() => {
                   setModalOpen(false)
                   router.push(`/register/${eventId}`)
                 }}
-                className="h-10 px-6 rounded-full text-xs font-bold bg-[#C8102E] hover:bg-[#A00B22] text-white shadow-[0_0_15px_rgba(200,16,46,0.35)] transition uppercase tracking-wider"
               >
                 Continue to Enlist
-              </button>
+              </Button>
             </div>
           </div>
         </div>

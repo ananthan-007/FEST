@@ -11,8 +11,13 @@ import { NextResponse, type NextRequest } from 'next/server'
  *    - /dashboard, /register/* → Any authenticated user
  *
  * Role lookup uses the service-role client directly — no RPC dependency.
- * This means no SQL function needs to be deployed; it works out of the box.
+ * Role is cached in a short-lived __role cookie so the DB is only hit on
+ * cache miss (first visit, or after the cookie expires in 5 min).
  */
+
+const ROLE_COOKIE = '__fest_role'
+const ROLE_COOKIE_MAX_AGE = 300 // 5 minutes
+
 export async function middleware(request: NextRequest) {
   let supabaseResponse = NextResponse.next({ request })
 
@@ -63,20 +68,31 @@ export async function middleware(request: NextRequest) {
 
   if (!needsRoleCheck) return supabaseResponse
 
-  // ── Fetch user role using service-role client (bypasses RLS, no RPC needed) ─
-  const adminClient = createSupabaseClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.SUPABASE_SERVICE_ROLE_KEY!,
-    { auth: { autoRefreshToken: false, persistSession: false } }
-  )
+  // ── Role lookup with cookie cache ──────────────────────────────────────────
+  // Check if we have a valid cached role cookie for this user
+  const cachedRoleCookie = request.cookies.get(ROLE_COOKIE)
+  let role: string
 
-  const { data: profile } = await adminClient
-    .from('profiles')
-    .select('role')
-    .eq('id', user.id)
-    .single()
+  if (cachedRoleCookie?.value) {
+    // Cookie format: "<userId>:<role>"  — verify it belongs to the current user
+    const [cookieUserId, cookieRole] = cachedRoleCookie.value.split(':')
+    if (cookieUserId === user.id && cookieRole) {
+      role = cookieRole
+    } else {
+      role = await fetchRoleFromDB(user.id)
+    }
+  } else {
+    role = await fetchRoleFromDB(user.id)
+  }
 
-  const role: string = profile?.role ?? 'user'
+  // Write / refresh the role cookie on the response
+  supabaseResponse.cookies.set(ROLE_COOKIE, `${user.id}:${role}`, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'lax',
+    maxAge: ROLE_COOKIE_MAX_AGE,
+    path: '/',
+  })
 
   // ── Admin-only routes ──────────────────────────────────────────────────────
   if (pathname.startsWith('/admin') && role !== 'admin') {
@@ -89,6 +105,20 @@ export async function middleware(request: NextRequest) {
   }
 
   return supabaseResponse
+}
+
+async function fetchRoleFromDB(userId: string): Promise<string> {
+  const adminClient = createSupabaseClient(
+    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    process.env.SUPABASE_SERVICE_ROLE_KEY!,
+    { auth: { autoRefreshToken: false, persistSession: false } }
+  )
+  const { data: profile } = await adminClient
+    .from('profiles')
+    .select('role')
+    .eq('id', userId)
+    .single()
+  return profile?.role ?? 'user'
 }
 
 export const config = {

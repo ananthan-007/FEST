@@ -37,17 +37,17 @@ export default function CountdownTimer() {
       {units.map(({ label, value }, i) => (
         <div key={label} className="flex items-center gap-2 sm:gap-4">
           <div className="flex flex-col items-center">
-            <div className="bg-[#0D1321]/90 border border-[#C8102E]/30 rounded-xl px-4 py-3 min-w-[64px] flex items-center justify-center shadow-[0_0_20px_rgba(200,16,46,0.15)]">
-              <span className="font-mono text-3xl sm:text-4xl font-bold text-[#DDE2F6] tabular-nums">
+            <div className="bg-[#0D0C0A]/95 border border-[#64401F]/70 rounded-xl px-4 py-3 min-w-[64px] flex items-center justify-center shadow-[0_0_24px_rgba(204,137,47,0.16)]">
+              <span className="font-mono text-3xl sm:text-4xl font-bold gold-gradient-text tabular-nums">
                 {value}
               </span>
             </div>
-            <span className="mt-1.5 text-[9px] font-semibold tracking-[0.2em] uppercase text-[#8A94A8]">
+            <span className="mt-1.5 text-[9px] font-semibold tracking-[0.2em] uppercase text-[#A89F91]">
               {label}
             </span>
           </div>
           {i < 3 && (
-            <span className="text-[#C8102E] text-2xl font-bold pb-5 opacity-70">:</span>
+            <span className="text-[#CC892F] text-2xl font-bold pb-5 opacity-75">:</span>
           )}
         </div>
       ))}

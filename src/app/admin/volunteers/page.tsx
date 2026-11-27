@@ -8,13 +8,14 @@ interface UserItem {
   email: string
   role: 'user' | 'volunteer' | 'admin'
   division: string | null
-  institution: { id: string; name: string } | null
+  institution?: { id: string; name: string } | null
+  institutions?: { id: string; name: string } | null
 }
 
 const roleBadges: Record<string, { label: string; class: string }> = {
-  admin: { label: 'Admin', class: 'bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1]' },
+  admin: { label: 'Admin', class: 'bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F]' },
   volunteer: { label: 'Volunteer', class: 'bg-purple-500/15 border border-purple-500/30 text-purple-400' },
-  user: { label: 'Cadet', class: 'bg-white/5 border border-white/10 text-[#8A94A8]' },
+  user: { label: 'Cadet', class: 'bg-white/5 border border-[#3A291B]/90 text-[#A89F91]' },
 }
 
 const divisionColors: Record<string, string> = {
@@ -92,14 +93,14 @@ export default function AdminVolunteersPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-5xl">
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div>
-        <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8] mb-1">
+      <div className="border-b border-[#3A291B]/80 pb-5">
+        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#CC892F] mb-1">
           Personnel Clearance
         </p>
-        <h1 className="font-serif text-2xl text-[#DDE2F6]">Volunteer &amp; Staff Management</h1>
-        <p className="text-xs text-[#8A94A8] mt-1">
+        <h1 className="font-serif text-3xl text-[#F5EFE6]">Volunteer &amp; Staff Management</h1>
+        <p className="text-xs text-[#A89F91] mt-1">
           Search registered cadets and grant or revoke scanner desk volunteer privileges.
         </p>
       </div>
@@ -110,7 +111,7 @@ export default function AdminVolunteersPage() {
           className={`px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-between border ${
             toast.type === 'success'
               ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-              : 'bg-[#C8102E]/15 border-[#C8102E]/30 text-[#FFB3B1]'
+              : 'bg-[#CC892F]/15 border-[#CC892F]/30 text-[#F4DD9F]'
           }`}
         >
           <div className="flex items-center gap-2">
@@ -126,19 +127,19 @@ export default function AdminVolunteersPage() {
       )}
 
       {/* Search Input Bar */}
-      <div className="bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl p-3 flex items-center gap-3">
-        <span className="material-symbols-outlined text-[#8A94A8] text-xl">search</span>
+      <div className="bg-[#0D0C0A]/80 backdrop-blur-xl border border-[#3A291B]/80 rounded-2xl p-3 flex items-center gap-3">
+        <span className="material-symbols-outlined text-[#A89F91] text-xl">search</span>
         <input
           type="text"
           value={search}
           onChange={(e) => setSearch(e.target.value)}
           placeholder="Search cadets by name or email address..."
-          className="flex-1 text-sm bg-transparent text-[#DDE2F6] placeholder:text-[#8A94A8]/60 outline-none"
+          className="flex-1 text-sm bg-transparent text-[#F5EFE6] placeholder:text-[#A89F91]/60 outline-none"
         />
         {search && (
           <button
             onClick={() => setSearch('')}
-            className="text-xs text-[#8A94A8] hover:text-[#DDE2F6] px-2 py-1 rounded-full hover:bg-white/5 transition"
+            className="text-xs text-[#A89F91] hover:text-[#F5EFE6] px-2 py-1 rounded-full hover:bg-white/5 transition"
           >
             Clear
           </button>
@@ -146,57 +147,57 @@ export default function AdminVolunteersPage() {
       </div>
 
       {/* Users List Table */}
-      <div className="bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl overflow-hidden">
+      <div className="bg-[#0D0C0A]/80 backdrop-blur-xl border border-[#3A291B]/80 rounded-2xl shadow-2xl overflow-hidden">
         {loading ? (
           <div className="py-16 flex flex-col items-center justify-center gap-3">
-            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#C8102E] border-t-transparent" />
-            <p className="text-xs text-[#8A94A8]">Searching accounts...</p>
+            <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#CC892F] border-t-transparent" />
+            <p className="text-xs text-[#A89F91]">Searching accounts...</p>
           </div>
         ) : users.length === 0 ? (
           <div className="py-16 text-center">
-            <span className="material-symbols-outlined text-4xl text-[#8A94A8]/40 mb-3 block">
+            <span className="material-symbols-outlined text-4xl text-[#A89F91]/40 mb-3 block">
               manage_accounts
             </span>
-            <p className="text-sm font-semibold text-[#DDE2F6]/60">No cadets found</p>
-            <p className="text-xs text-[#8A94A8]/60 mt-1">Try typing a different name or email.</p>
+            <p className="text-sm font-semibold text-[#F5EFE6]/60">No cadets found</p>
+            <p className="text-xs text-[#A89F91]/60 mt-1">Try typing a different name or email.</p>
           </div>
         ) : (
           <div className="overflow-x-auto">
             <table className="w-full text-left">
-              <thead className="bg-[#161B2A]/90 border-b border-white/5">
+              <thead className="bg-[#141311]/90 border-b border-[#3A291B]/60">
                 <tr>
-                  <th className="py-3.5 px-5 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+                  <th className="py-3.5 px-5 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                     Cadet / User
                   </th>
-                  <th className="py-3.5 px-4 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+                  <th className="py-3.5 px-4 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                     Institution
                   </th>
-                  <th className="py-3.5 px-4 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+                  <th className="py-3.5 px-4 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                     Division
                   </th>
-                  <th className="py-3.5 px-4 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+                  <th className="py-3.5 px-4 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                     Current Role
                   </th>
-                  <th className="py-3.5 px-5 text-right text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+                  <th className="py-3.5 px-5 text-right text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                     Action
                   </th>
                 </tr>
               </thead>
-              <tbody className="divide-y divide-white/5">
+              <tbody className="divide-y divide-[#3A291B]/60">
                 {users.map((u) => {
                   const badge = roleBadges[u.role] || roleBadges.user
                   const isUpdating = updatingId === u.id
-                  const divClass = u.division ? (divisionColors[u.division] ?? 'bg-white/5 border-white/10 text-[#8A94A8]') : ''
+                  const divClass = u.division ? (divisionColors[u.division] ?? 'bg-white/5 border-[#3A291B]/90 text-[#A89F91]') : ''
 
                   return (
                     <tr key={u.id} className="hover:bg-white/[0.02] transition">
                       <td className="py-3.5 px-5">
-                        <div className="font-semibold text-sm text-[#DDE2F6]">{u.display_name}</div>
-                        <div className="text-[11px] font-mono text-[#8A94A8] mt-0.5">{u.email}</div>
+                        <div className="font-semibold text-sm text-[#F5EFE6]">{u.display_name}</div>
+                        <div className="text-[11px] font-mono text-[#A89F91] mt-0.5">{u.email}</div>
                       </td>
-                      <td className="py-3.5 px-4 text-sm text-[#8A94A8]">
-                        {u.institution?.name || (
-                          <span className="italic text-[#8A94A8]/40">None</span>
+                      <td className="py-3.5 px-4 text-sm text-[#A89F91]">
+                        {u.institutions?.name || u.institution?.name || (
+                          <span className="italic text-[#A89F91]/40">None</span>
                         )}
                       </td>
                       <td className="py-3.5 px-4">
@@ -207,7 +208,7 @@ export default function AdminVolunteersPage() {
                             {u.division}
                           </span>
                         ) : (
-                          <span className="text-xs text-[#8A94A8]/40">—</span>
+                          <span className="text-xs text-[#A89F91]/40">—</span>
                         )}
                       </td>
                       <td className="py-3.5 px-4">
@@ -219,7 +220,7 @@ export default function AdminVolunteersPage() {
                       </td>
                       <td className="py-3.5 px-5 text-right">
                         {u.role === 'admin' ? (
-                          <span className="text-[11px] text-[#8A94A8]/40 italic">System Admin</span>
+                          <span className="text-[11px] text-[#A89F91]/40 italic">System Admin</span>
                         ) : u.role === 'volunteer' ? (
                           <button
                             onClick={() => handleRoleToggle(u)}

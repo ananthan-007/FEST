@@ -32,6 +32,15 @@ export async function POST(request: Request) {
     const buffer = Buffer.from(await file.arrayBuffer())
 
     const adminClient = createAdminClient()
+
+    // Ensure the posters bucket exists and is public so event posters always render
+    const { data: existingBucket } = await adminClient.storage.getBucket('posters')
+    if (!existingBucket) {
+      await adminClient.storage.createBucket('posters', { public: true })
+    } else if (!existingBucket.public) {
+      await adminClient.storage.updateBucket('posters', { public: true })
+    }
+
     const { error: uploadError } = await adminClient.storage
       .from('posters')
       .upload(fileName, buffer, {

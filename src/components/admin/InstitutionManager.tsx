@@ -178,7 +178,7 @@ export default function InstitutionManager() {
           <div className="flex gap-2 items-center">
             <input
               autoFocus
-              className="h-9 bg-[#0D1321] border border-white/10 rounded-lg px-3 text-xs text-[#DDE2F6] placeholder:text-[#8A94A8]/60 focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+              className="h-9 bg-[#0D0C0A] border border-[#3A291B]/90 rounded-lg px-3 text-xs text-[#F5EFE6] placeholder:text-[#A89F91]/60 focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
               placeholder="Group name"
               value={newGroupName}
               onChange={e => setNewGroupName(e.target.value)}
@@ -192,7 +192,7 @@ export default function InstitutionManager() {
             </button>
             <button
               onClick={() => setAddingGroup(false)}
-              className="h-9 px-4 bg-white/5 border border-white/10 text-[#8A94A8] hover:bg-white/10 rounded-full text-[10px] font-bold uppercase tracking-wider transition"
+              className="h-9 px-4 bg-white/5 border border-[#3A291B]/90 text-[#A89F91] hover:bg-white/10 rounded-full text-[10px] font-bold uppercase tracking-wider transition"
             >
               Cancel
             </button>
@@ -200,7 +200,7 @@ export default function InstitutionManager() {
         ) : (
           <button
             onClick={() => setAddingGroup(true)}
-            className="inline-flex items-center gap-1.5 h-9 px-4 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_16px_rgba(200,16,46,0.35)] transition"
+            className="inline-flex items-center gap-1.5 h-9 px-4 gold-gradient-button rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_16px_rgba(204,137,47,0.35)] transition"
           >
             <span className="material-symbols-outlined text-sm">add</span>
             Add Group
@@ -209,7 +209,7 @@ export default function InstitutionManager() {
       </div>
 
       {(Array.isArray(groups) ? groups : []).map(group => (
-        <div key={group.id} className="bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl overflow-hidden">
+        <div key={group.id} className="bg-[#0D0C0A]/80 backdrop-blur-xl border border-[#3A291B]/80 rounded-2xl overflow-hidden">
           {/* Group Row */}
           <div className="flex items-center justify-between px-5 py-4">
             <button
@@ -217,7 +217,7 @@ export default function InstitutionManager() {
               className="flex items-center gap-2 flex-1 text-left"
             >
               <span
-                className={`material-symbols-outlined text-[#8A94A8] text-xl transition-transform duration-200 ${
+                className={`material-symbols-outlined text-[#A89F91] text-xl transition-transform duration-200 ${
                   expandedGroups.has(group.id) ? 'rotate-90' : ''
                 }`}
               >
@@ -226,7 +226,7 @@ export default function InstitutionManager() {
               {editingGroup === group.id ? (
                 <input
                   autoFocus
-                  className="h-8 bg-[#0D1321] border border-white/10 rounded-lg px-3 text-sm text-[#DDE2F6] focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                  className="h-8 bg-[#0D0C0A] border border-[#3A291B]/90 rounded-lg px-3 text-sm text-[#F5EFE6] focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                   defaultValue={group.name}
                   onKeyDown={e => {
                     if (e.key === 'Enter') handleUpdateGroup(group.id, (e.target as HTMLInputElement).value)
@@ -235,14 +235,14 @@ export default function InstitutionManager() {
                   onClick={e => e.stopPropagation()}
                 />
               ) : (
-                <span className="font-serif text-base text-[#DDE2F6]">{group.name}</span>
+                <span className="font-serif text-base text-[#F5EFE6]">{group.name}</span>
               )}
             </button>
             <div className="flex gap-2 ml-4" onClick={e => e.stopPropagation()}>
               {editingGroup === group.id ? (
                 <button
                   onClick={() => setEditingGroup(null)}
-                  className="h-7 px-3 bg-white/5 border border-white/10 text-[#8A94A8] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition"
+                  className="h-7 px-3 bg-white/5 border border-[#3A291B]/90 text-[#A89F91] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition"
                 >
                   Cancel
                 </button>
@@ -250,13 +250,13 @@ export default function InstitutionManager() {
                 <>
                   <button
                     onClick={() => setEditingGroup(group.id)}
-                    className="h-7 px-3 bg-[#ADC6FF]/10 border border-[#ADC6FF]/20 text-[#ADC6FF] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#ADC6FF]/20 transition"
+                    className="h-7 px-3 bg-[#E3B464]/10 border border-[#E3B464]/20 text-[#E3B464] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#E3B464]/20 transition"
                   >
                     Edit
                   </button>
                   <button
                     onClick={() => handleDeleteGroup(group.id, group.name)}
-                    className="h-7 px-3 bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#C8102E]/25 transition"
+                    className="h-7 px-3 bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#CC892F]/25 transition"
                   >
                     Delete
                   </button>
@@ -267,9 +267,9 @@ export default function InstitutionManager() {
 
           {/* Battalions */}
           {expandedGroups.has(group.id) && (
-            <div className="bg-[#080E1C]/90 px-5 pb-4 pt-2 space-y-2 border-t border-white/5">
+            <div className="bg-[#0A0908]/90 px-5 pb-4 pt-2 space-y-2 border-t border-[#3A291B]/60">
               {(battalions[group.id] ?? []).map(bn => (
-                <div key={bn.id} className="bg-[#0D1321]/60 border border-white/8 rounded-xl overflow-hidden">
+                <div key={bn.id} className="bg-[#0D0C0A]/60 border border-[#3A291B]/80 rounded-xl overflow-hidden">
                   {/* Battalion Row */}
                   <div className="flex items-center justify-between px-4 py-3">
                     <button
@@ -277,7 +277,7 @@ export default function InstitutionManager() {
                       className="flex items-center gap-2 flex-1 text-left"
                     >
                       <span
-                        className={`material-symbols-outlined text-[#8A94A8] text-base transition-transform duration-200 ${
+                        className={`material-symbols-outlined text-[#A89F91] text-base transition-transform duration-200 ${
                           expandedBattalions.has(bn.id) ? 'rotate-90' : ''
                         }`}
                       >
@@ -286,7 +286,7 @@ export default function InstitutionManager() {
                       {editingBattalion === bn.id ? (
                         <input
                           autoFocus
-                          className="h-7 bg-[#080E1C] border border-white/10 rounded-lg px-3 text-xs text-[#DDE2F6] focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                          className="h-7 bg-[#0A0908] border border-[#3A291B]/90 rounded-lg px-3 text-xs text-[#F5EFE6] focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                           defaultValue={bn.name}
                           onChange={e => setInputValue(e.target.value)}
                           onFocus={e => setInputValue(e.target.value)}
@@ -297,14 +297,14 @@ export default function InstitutionManager() {
                           onClick={e => e.stopPropagation()}
                         />
                       ) : (
-                        <span className="text-sm font-medium text-[#DDE2F6]/80">{bn.name}</span>
+                        <span className="text-sm font-medium text-[#F5EFE6]/80">{bn.name}</span>
                       )}
                     </button>
                     <div className="flex gap-2 ml-2" onClick={e => e.stopPropagation()}>
                       {editingBattalion === bn.id ? (
                         <button
                           onClick={() => { setEditingBattalion(null); setInputValue('') }}
-                          className="h-6 px-2.5 bg-white/5 border border-white/10 text-[#8A94A8] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition"
+                          className="h-6 px-2.5 bg-white/5 border border-[#3A291B]/90 text-[#A89F91] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition"
                         >
                           Cancel
                         </button>
@@ -312,13 +312,13 @@ export default function InstitutionManager() {
                         <>
                           <button
                             onClick={() => { setEditingBattalion(bn.id); setInputValue(bn.name) }}
-                            className="h-6 px-2.5 bg-[#ADC6FF]/10 border border-[#ADC6FF]/20 text-[#ADC6FF] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#ADC6FF]/20 transition"
+                            className="h-6 px-2.5 bg-[#E3B464]/10 border border-[#E3B464]/20 text-[#E3B464] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#E3B464]/20 transition"
                           >
                             Edit
                           </button>
                           <button
                             onClick={() => handleDeleteBattalion(bn.id, bn.name, group.id)}
-                            className="h-6 px-2.5 bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#C8102E]/25 transition"
+                            className="h-6 px-2.5 bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#CC892F]/25 transition"
                           >
                             Delete
                           </button>
@@ -329,7 +329,7 @@ export default function InstitutionManager() {
 
                   {/* Institutions */}
                   {expandedBattalions.has(bn.id) && (
-                    <div className="bg-[#080E1C]/90 px-4 py-3 space-y-1.5 border-t border-white/5">
+                    <div className="bg-[#0A0908]/90 px-4 py-3 space-y-1.5 border-t border-[#3A291B]/60">
                       {(institutions[bn.id] ?? []).map(inst => (
                         <div
                           key={inst.id}
@@ -338,7 +338,7 @@ export default function InstitutionManager() {
                           {editingInstitution === inst.id ? (
                             <input
                               autoFocus
-                              className="h-7 bg-[#0D1321] border border-white/10 rounded-lg px-3 text-xs text-[#DDE2F6] flex-1 mr-2 focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                              className="h-7 bg-[#0D0C0A] border border-[#3A291B]/90 rounded-lg px-3 text-xs text-[#F5EFE6] flex-1 mr-2 focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                               defaultValue={inst.name}
                               onChange={e => setInputValue(e.target.value)}
                               onFocus={e => setInputValue(e.target.value)}
@@ -348,13 +348,13 @@ export default function InstitutionManager() {
                               }}
                             />
                           ) : (
-                            <span className="text-xs text-[#DDE2F6]/70 flex-1">{inst.name}</span>
+                            <span className="text-xs text-[#F5EFE6]/70 flex-1">{inst.name}</span>
                           )}
                           <div className="flex gap-2">
                             {editingInstitution === inst.id ? (
                               <button
                                 onClick={() => { setEditingInstitution(null); setInputValue('') }}
-                                className="h-6 px-2.5 bg-white/5 border border-white/10 text-[#8A94A8] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition"
+                                className="h-6 px-2.5 bg-white/5 border border-[#3A291B]/90 text-[#A89F91] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-white/10 transition"
                               >
                                 Cancel
                               </button>
@@ -362,13 +362,13 @@ export default function InstitutionManager() {
                               <>
                                 <button
                                   onClick={() => { setEditingInstitution(inst.id); setInputValue(inst.name) }}
-                                  className="h-6 px-2.5 bg-[#ADC6FF]/10 border border-[#ADC6FF]/20 text-[#ADC6FF] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#ADC6FF]/20 transition"
+                                  className="h-6 px-2.5 bg-[#E3B464]/10 border border-[#E3B464]/20 text-[#E3B464] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#E3B464]/20 transition"
                                 >
                                   Edit
                                 </button>
                                 <button
                                   onClick={() => handleDeleteInstitution(inst.id, inst.name, bn.id)}
-                                  className="h-6 px-2.5 bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#C8102E]/25 transition"
+                                  className="h-6 px-2.5 bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F] rounded-full text-[10px] font-bold uppercase tracking-wider hover:bg-[#CC892F]/25 transition"
                                 >
                                   Delete
                                 </button>
@@ -383,7 +383,7 @@ export default function InstitutionManager() {
                         <div className="flex gap-2 mt-2 items-center">
                           <input
                             autoFocus
-                            className="h-9 flex-1 bg-[#0D1321] border border-white/10 rounded-full px-4 text-xs text-[#DDE2F6] placeholder:text-[#8A94A8]/60 focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                            className="h-9 flex-1 bg-[#0D0C0A] border border-[#3A291B]/90 rounded-full px-4 text-xs text-[#F5EFE6] placeholder:text-[#A89F91]/60 focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                             placeholder="Institution name"
                             value={inputValue}
                             onChange={e => setInputValue(e.target.value)}
@@ -400,7 +400,7 @@ export default function InstitutionManager() {
                           </button>
                           <button
                             onClick={() => { setAddingInstitution(null); setInputValue('') }}
-                            className="h-9 w-9 flex items-center justify-center bg-white/5 border border-white/10 text-[#8A94A8] rounded-full hover:bg-white/10 transition"
+                            className="h-9 w-9 flex items-center justify-center bg-white/5 border border-[#3A291B]/90 text-[#A89F91] rounded-full hover:bg-white/10 transition"
                           >
                             <span className="material-symbols-outlined text-sm">close</span>
                           </button>
@@ -408,7 +408,7 @@ export default function InstitutionManager() {
                       ) : (
                         <button
                           onClick={() => { setAddingInstitution(bn.id); setInputValue('') }}
-                          className="mt-2 inline-flex items-center gap-1 text-xs text-[#ADC6FF]/60 hover:text-[#ADC6FF] transition"
+                          className="mt-2 inline-flex items-center gap-1 text-xs text-[#E3B464]/60 hover:text-[#E3B464] transition"
                         >
                           <span className="material-symbols-outlined text-sm">add_circle</span>
                           Add Institution
@@ -424,7 +424,7 @@ export default function InstitutionManager() {
                 <div className="flex gap-2 mt-2 items-center">
                   <input
                     autoFocus
-                    className="h-9 flex-1 bg-[#0D1321] border border-white/10 rounded-full px-4 text-xs text-[#DDE2F6] placeholder:text-[#8A94A8]/60 focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                    className="h-9 flex-1 bg-[#0D0C0A] border border-[#3A291B]/90 rounded-full px-4 text-xs text-[#F5EFE6] placeholder:text-[#A89F91]/60 focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                     placeholder="Battalion name"
                     value={inputValue}
                     onChange={e => setInputValue(e.target.value)}
@@ -441,7 +441,7 @@ export default function InstitutionManager() {
                   </button>
                   <button
                     onClick={() => { setAddingBattalion(null); setInputValue('') }}
-                    className="h-9 w-9 flex items-center justify-center bg-white/5 border border-white/10 text-[#8A94A8] rounded-full hover:bg-white/10 transition"
+                    className="h-9 w-9 flex items-center justify-center bg-white/5 border border-[#3A291B]/90 text-[#A89F91] rounded-full hover:bg-white/10 transition"
                   >
                     <span className="material-symbols-outlined text-sm">close</span>
                   </button>
@@ -449,7 +449,7 @@ export default function InstitutionManager() {
               ) : (
                 <button
                   onClick={() => { setAddingBattalion(group.id); setInputValue('') }}
-                  className="mt-1 inline-flex items-center gap-1 text-xs text-[#ADC6FF]/60 hover:text-[#ADC6FF] transition"
+                  className="mt-1 inline-flex items-center gap-1 text-xs text-[#E3B464]/60 hover:text-[#E3B464] transition"
                 >
                   <span className="material-symbols-outlined text-sm">add_circle</span>
                   Add Battalion

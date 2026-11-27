@@ -1,9 +1,11 @@
 import type { Metadata, Viewport } from "next";
+import { SpeedInsights } from "@vercel/speed-insights/next";
 import "./globals.css";
+import DhruvaSplashLoader from "@/components/DhruvaSplashLoader";
 
 export const metadata: Metadata = {
-  title: "FEST · Kerala NCC Fest",
-  description: "Official National Cadet Corps Annual Inter-Collegiate Conclave & Registration Platform in Kerala.",
+  title: "DHRUVA · Kerala NCC Conclave",
+  description: "DHRUVA — Official National Cadet Corps Annual Inter-Collegiate Conclave & Registration Platform in Kerala.",
 };
 
 export const viewport: Viewport = {
@@ -11,7 +13,7 @@ export const viewport: Viewport = {
   initialScale: 1,
   maximumScale: 1,
   viewportFit: "cover",
-  themeColor: "#050A18",
+  themeColor: "#050505",
 };
 
 export default function RootLayout({
@@ -25,8 +27,10 @@ export default function RootLayout({
         <link rel="preconnect" href="https://fonts.googleapis.com" />
         <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
       </head>
-      <body className="bg-space-dark text-on-surface font-sans antialiased selection:bg-primary-container selection:text-white min-h-screen flex flex-col">
+      <body className="bg-space-dark text-on-surface font-sans antialiased selection:bg-[#CC892F] selection:text-[#050505] min-h-screen flex flex-col">
+        <DhruvaSplashLoader />
         {children}
+        <SpeedInsights />
       </body>
     </html>
   );

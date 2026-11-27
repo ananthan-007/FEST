@@ -3,7 +3,13 @@
 import React, { useEffect, useState } from 'react'
 import { useParams, useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowLeft, AlertTriangle, UserCog } from 'lucide-react'
 import RegistrationForm from '@/components/RegistrationForm'
+import SiteHeader from '@/components/SiteHeader'
+import SiteFooter from '@/components/SiteFooter'
+import { SpotlightCard } from '@/components/reactbits'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 interface EventData {
   id: string
@@ -15,6 +21,7 @@ interface EventData {
   teamMax: number | null
   fee: number | string | null
   conflictAlertEnabled: boolean
+  isActive?: boolean
 }
 
 interface UserProfile {
@@ -40,7 +47,6 @@ export default function RegisterEventPage() {
         setLoading(true)
         setError(null)
 
-        // Fetch event & user profile in parallel
         const [eventRes, profileRes] = await Promise.all([
           fetch(`/api/events/${eventId}`),
           fetch('/api/user/profile'),
@@ -80,6 +86,13 @@ export default function RegisterEventPage() {
           teamMax: rawEvent.team_max ?? rawEvent.teamMax ?? null,
           fee: rawEvent.fee ?? 0,
           conflictAlertEnabled: !!(rawEvent.conflict_alert_enabled ?? rawEvent.conflictAlertEnabled),
+          isActive: rawEvent.is_active !== false,
+        }
+
+        if (mappedEvent.isActive === false) {
+          setError('Registration for this event is currently closed.')
+          setLoading(false)
+          return
         }
 
         setEvent(mappedEvent)
@@ -99,10 +112,10 @@ export default function RegisterEventPage() {
 
   if (loading) {
     return (
-      <div className="min-h-screen bg-[#050A18] flex items-center justify-center">
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center">
         <div className="flex flex-col items-center gap-3">
-          <div className="w-10 h-10 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
-          <p className="text-[#8A94A8] text-xs uppercase tracking-widest">
+          <div className="w-10 h-10 border-2 border-[#CC892F] border-t-transparent rounded-full animate-spin" />
+          <p className="text-[#A89F91] text-xs uppercase tracking-widest">
             Loading Registration Portal…
           </p>
         </div>
@@ -112,94 +125,81 @@ export default function RegisterEventPage() {
 
   if (error || !event) {
     return (
-      <div className="min-h-screen bg-[#050A18] flex items-center justify-center px-4">
-        <div className="max-w-md w-full p-8 bg-[#0D1321]/80 border border-white/8 rounded-2xl text-center shadow-2xl">
-          <span className="material-symbols-outlined text-4xl text-[#C8102E] block mb-3">
-            warning
-          </span>
-          <h2 className="text-xl font-serif text-[#DDE2F6] mb-2">Registration Unavailable</h2>
-          <p className="text-sm text-[#8A94A8] mb-6">{error || 'Event could not be found.'}</p>
-          <Link
-            href="/"
-            className="inline-block px-6 py-2.5 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-xs font-semibold uppercase tracking-wider transition shadow-[0_0_20px_rgba(200,16,46,0.35)]"
-          >
-            Return to Events
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4">
+        <SpotlightCard className="max-w-md w-full p-8 text-center">
+          <AlertTriangle className="w-10 h-10 text-[#E3B464] mx-auto mb-3" />
+          <h2 className="text-xl font-serif text-[#F4DD9F] mb-2">Registration Unavailable</h2>
+          <p className="text-sm text-[#A89F91] mb-6">{error || 'Event could not be found.'}</p>
+          <Link href="/events">
+            <Button>Return to Events</Button>
           </Link>
-        </div>
+        </SpotlightCard>
       </div>
     )
   }
 
-  // Profile incomplete gate
   if (userProfile && !userProfile.profileComplete) {
     return (
-      <div className="min-h-screen bg-[#050A18] flex items-center justify-center px-4">
-        <div className="max-w-md w-full p-8 bg-[#0D1321]/80 border border-amber-500/25 rounded-2xl shadow-2xl text-center">
-          <div className="w-12 h-12 bg-amber-500/15 border border-amber-500/30 text-amber-400 rounded-full flex items-center justify-center mx-auto mb-4">
-            <span className="material-symbols-outlined text-2xl">person_alert</span>
+      <div className="min-h-screen bg-[#050505] flex items-center justify-center px-4">
+        <SpotlightCard className="max-w-md w-full p-8 text-center border-[#CC892F]/50">
+          <div className="w-12 h-12 bg-[#CC892F]/15 border border-[#CC892F]/40 text-[#E3B464] rounded-full flex items-center justify-center mx-auto mb-4">
+            <UserCog className="w-6 h-6" />
           </div>
-          <h2 className="text-xl font-serif text-[#DDE2F6] mb-2">Profile Incomplete</h2>
-          <p className="text-sm text-[#8A94A8] mb-6">
+          <h2 className="text-xl font-serif text-[#F4DD9F] mb-2">Profile Incomplete</h2>
+          <p className="text-sm text-[#A89F91] mb-6">
             Complete your cadet record (NCC Group, Battalion, Institution &amp; Division) before
             enlisting in any competitive operations.
           </p>
-          <Link
-            href="/dashboard/profile"
-            className="inline-block px-6 py-3 bg-amber-500 hover:bg-amber-400 text-black font-bold text-xs uppercase tracking-wider rounded-full transition shadow-lg"
-          >
-            Complete Profile Now →
+          <Link href="/dashboard/profile">
+            <Button>Complete Profile Now →</Button>
           </Link>
-        </div>
+        </SpotlightCard>
       </div>
     )
   }
 
   return (
-    <div className="min-h-screen bg-[#050A18] text-[#DDE2F6] pb-24">
-      {/* Top Header */}
-      <header className="h-16 px-4 sm:px-8 border-b border-white/5 flex items-center justify-between bg-[#050A18]/80 backdrop-blur-xl sticky top-0 z-40">
-        <Link
-          href={`/events/${event.id}`}
-          className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[#8A94A8] hover:text-[#DDE2F6] transition-colors"
-        >
-          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-          Cancel &amp; Return
-        </Link>
-        <span className="h-6 px-3 inline-flex items-center bg-[#C8102E]/15 border border-[#C8102E]/30 rounded-full text-[9px] font-semibold tracking-wider uppercase text-[#FFB3B1]">
-          Cadet Enlistment
-        </span>
-      </header>
+    <div className="min-h-screen flex flex-col bg-[#050505] text-[#F5EFE6]">
+      <SiteHeader />
 
-      <div className="max-w-2xl mx-auto py-8 px-4 sm:px-6 space-y-6">
+      <main className="flex-1 max-w-2xl w-full mx-auto pt-24 pb-20 px-4 sm:px-6 space-y-6">
+        <div className="flex items-center justify-between gap-3">
+          <Link
+            href={`/events/${event.id}`}
+            className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[#A89F91] hover:text-[#F4DD9F] transition-colors"
+          >
+            <ArrowLeft className="w-4 h-4" />
+            Cancel &amp; Return
+          </Link>
+          <Badge variant="gold">Cadet Enlistment</Badge>
+        </div>
+
         {/* Stepper / Header */}
         <div>
           <div className="flex items-center justify-between mb-2">
-            <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#C8102E]">
+            <span className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#CC892F]">
               STEP 01 OF 02 · EVENT REGISTRATION
             </span>
-            <span className="text-[10px] text-[#8A94A8] tracking-widest uppercase">
+            <span className="text-[10px] text-[#A89F91] tracking-widest uppercase">
               {event.participationType} mode
             </span>
           </div>
-          <div className="h-1 w-full bg-white/10 rounded-full overflow-hidden">
-            <div className="h-full w-1/2 bg-[#C8102E] rounded-full shadow-[0_0_10px_#C8102E]" />
+          <div className="h-1 w-full bg-[#242321] rounded-full overflow-hidden">
+            <div className="h-full w-1/2 gold-gradient-bg rounded-full shadow-[0_0_10px_#CC892F]" />
           </div>
-          <h1 className="font-serif text-3xl text-[#DDE2F6] mt-4 leading-tight">{event.title}</h1>
+          <h1 className="font-serif text-3xl gold-gradient-text mt-4 leading-tight">{event.title}</h1>
           <div className="flex flex-wrap items-center gap-2 mt-2">
-            <span className="text-xs text-[#8A94A8]">Eligible Divisions:</span>
+            <span className="text-xs text-[#A89F91]">Eligible Divisions:</span>
             {(event.eligibleDivisions || []).map((d) => (
-              <span
-                key={d}
-                className="h-5 px-2 bg-white/5 border border-white/10 rounded-full text-[10px] font-semibold text-[#DDE2F6]"
-              >
-                {d}
-              </span>
+              <Badge key={d} variant="bronze">{d}</Badge>
             ))}
           </div>
         </div>
 
         {userProfile && <RegistrationForm event={event} userProfile={userProfile} />}
-      </div>
+      </main>
+
+      <SiteFooter />
     </div>
   )
 }

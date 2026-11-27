@@ -3,6 +3,8 @@ import { verifyQRToken } from '@/lib/qr'
 import { createAdminClient } from '@/lib/supabase/admin'
 import { createClient } from '@/lib/supabase/server'
 
+export const dynamic = 'force-dynamic'
+
 export async function GET(req: Request) {
   try {
     const supabase = await createClient()

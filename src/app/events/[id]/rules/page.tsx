@@ -1,6 +1,14 @@
 import { notFound } from 'next/navigation'
 import Link from 'next/link'
+import { ArrowLeft, ArrowRight, FileText } from 'lucide-react'
 import { createAdminClient } from '@/lib/supabase/admin'
+import SiteHeader from '@/components/SiteHeader'
+import SiteFooter from '@/components/SiteFooter'
+import Breadcrumbs from '@/components/Breadcrumbs'
+import { SpotlightCard } from '@/components/reactbits'
+import { ScrollReveal } from '@/components/motion/ScrollReveal'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
 
 export const dynamic = 'force-dynamic'
 
@@ -21,63 +29,64 @@ export default async function EventRulesPage({ params }: PageProps) {
   if (!event) notFound()
 
   return (
-    <div className="min-h-screen bg-[#050A18] text-[#DDE2F6] pb-24">
-      {/* Top Bar */}
-      <header className="h-16 px-4 sm:px-8 border-b border-white/5 flex items-center justify-between bg-[#050A18]/80 backdrop-blur-xl sticky top-0 z-40">
-        <Link
-          href={`/events/${event.id}`}
-          className="inline-flex items-center gap-2 text-xs font-semibold tracking-wider uppercase text-[#8A94A8] hover:text-[#DDE2F6] transition-colors"
-        >
-          <span className="material-symbols-outlined text-[18px]">arrow_back</span>
-          Back to Event Brief
-        </Link>
-        <span className="h-6 px-3 inline-flex items-center bg-[#C8102E]/15 border border-[#C8102E]/30 rounded-full text-[9px] font-semibold tracking-wider uppercase text-[#FFB3B1]">
-          Standing Orders
-        </span>
-      </header>
+    <div className="min-h-screen flex flex-col bg-[#050505] text-[#F5EFE6]">
+      <SiteHeader />
 
-      <div className="max-w-3xl mx-auto px-4 sm:px-6 py-10 space-y-6">
-        <div>
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#C8102E] block mb-1">
-            Rules &amp; Regulations
-          </span>
-          <h1 className="font-serif text-3xl sm:text-4xl text-[#DDE2F6] leading-tight">
-            {event.title}
-          </h1>
-        </div>
+      <main className="flex-1 max-w-3xl w-full mx-auto px-4 sm:px-6 pt-24 pb-20 space-y-6">
+        <Breadcrumbs
+          items={[
+            { label: 'Events', href: '/events' },
+            { label: event.title, href: `/events/${event.id}` },
+            { label: 'Rules & Regulations' },
+          ]}
+        />
 
-        <div className="border-t border-white/10" />
+        <ScrollReveal className="flex flex-wrap items-center justify-between gap-3">
+          <div>
+            <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#CC892F] block mb-1">
+              Standing Orders
+            </span>
+            <h1 className="font-serif text-3xl sm:text-4xl gold-gradient-text leading-tight">
+              {event.title}
+            </h1>
+          </div>
+          <Badge variant="gold">Official Rules</Badge>
+        </ScrollReveal>
 
-        <div className="bg-[#0D1321]/75 backdrop-blur-xl border border-white/8 rounded-2xl p-6 sm:p-8 shadow-2xl">
-          {event.rules_content || event.description ? (
-            <div className="text-[#DDE2F6] text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-sans">
-              {event.rules_content || event.description}
-            </div>
-          ) : (
-            <div className="py-8 text-center text-[#8A94A8]">
-              <span className="material-symbols-outlined text-4xl block mb-2 opacity-30">description</span>
-              <p className="text-sm">No official rules published for this event yet.</p>
-            </div>
-          )}
-        </div>
+        <div className="border-t border-[#3A291B]/80" />
 
-        <div className="pt-4 flex justify-between items-center">
-          <Link
-            href={`/events/${event.id}`}
-            className="h-11 px-6 inline-flex items-center gap-2 bg-[#161B2A] border border-white/8 hover:border-[#C8102E]/30 rounded-full text-xs font-semibold uppercase tracking-wider text-[#DDE2F6] transition"
-          >
-            <span className="material-symbols-outlined text-[16px]">arrow_back</span>
-            Return to Brief
+        <ScrollReveal delay={0.05}>
+          <SpotlightCard className="p-6 sm:p-8">
+            {event.rules_content || event.description ? (
+              <div className="text-[#F5EFE6] text-sm sm:text-base leading-relaxed whitespace-pre-wrap font-sans">
+                {event.rules_content || event.description}
+              </div>
+            ) : (
+              <div className="py-8 text-center text-[#A89F91]">
+                <FileText className="w-10 h-10 mx-auto mb-2 opacity-30 text-[#E3B464]" />
+                <p className="text-sm">No official rules published for this event yet.</p>
+              </div>
+            )}
+          </SpotlightCard>
+        </ScrollReveal>
+
+        <div className="pt-2 flex flex-wrap justify-between items-center gap-3">
+          <Link href={`/events/${event.id}`}>
+            <Button variant="bronze">
+              <ArrowLeft className="w-4 h-4" />
+              Return to Brief
+            </Button>
           </Link>
-          <Link
-            href={`/register/${event.id}`}
-            className="h-11 px-8 inline-flex items-center gap-2 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_20px_rgba(200,16,46,0.35)] transition"
-          >
-            Register Now
-            <span className="material-symbols-outlined text-[16px]">arrow_forward</span>
+          <Link href={`/register/${event.id}`}>
+            <Button variant="gold">
+              Register Now
+              <ArrowRight className="w-4 h-4" />
+            </Button>
           </Link>
         </div>
-      </div>
+      </main>
+
+      <SiteFooter />
     </div>
   )
 }

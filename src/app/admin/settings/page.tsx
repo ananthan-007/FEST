@@ -83,14 +83,14 @@ export default function AdminSettingsPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 max-w-5xl mx-auto">
       {/* Header */}
-      <div>
-        <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8] mb-1">
+      <div className="border-b border-[#3A291B]/80 pb-5">
+        <p className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#CC892F] mb-1">
           Operational Config
         </p>
-        <h1 className="font-serif text-2xl text-[#DDE2F6]">System Settings</h1>
-        <p className="text-xs text-[#8A94A8] mt-1">
+        <h1 className="font-serif text-3xl text-[#F5EFE6]">System Settings</h1>
+        <p className="text-xs text-[#A89F91] mt-1">
           Configure fest-wide operational constraints and platform variables.
         </p>
       </div>
@@ -101,7 +101,7 @@ export default function AdminSettingsPage() {
           className={`px-4 py-3 rounded-xl text-sm font-medium flex items-center justify-between border ${
             toast.type === 'success'
               ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-              : 'bg-[#C8102E]/15 border-[#C8102E]/30 text-[#FFB3B1]'
+              : 'bg-[#CC892F]/15 border-[#CC892F]/30 text-[#F4DD9F]'
           }`}
         >
           <div className="flex items-center gap-2">
@@ -118,76 +118,76 @@ export default function AdminSettingsPage() {
 
       {loading ? (
         <div className="py-16 flex flex-col items-center justify-center gap-3">
-          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#C8102E] border-t-transparent" />
-          <p className="text-xs text-[#8A94A8]">Loading settings...</p>
+          <div className="animate-spin rounded-full h-8 w-8 border-2 border-[#CC892F] border-t-transparent" />
+          <p className="text-xs text-[#A89F91]">Loading settings...</p>
         </div>
       ) : (
         <div className="space-y-5">
           {/* Card: Registration Deadline */}
-          <div className="bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl p-6">
+          <div className="bg-[#0D0C0A]/80 backdrop-blur-xl border border-[#3A291B]/80 rounded-2xl p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[#C8102E] text-xl mt-0.5">
+                <span className="material-symbols-outlined text-[#CC892F] text-xl mt-0.5">
                   schedule
                 </span>
                 <div>
-                  <h2 className="font-serif text-base text-[#DDE2F6]">Registration Deadline</h2>
-                  <p className="text-xs text-[#8A94A8] mt-0.5">
+                  <h2 className="font-serif text-base text-[#F5EFE6]">Registration Deadline</h2>
+                  <p className="text-xs text-[#A89F91] mt-0.5">
                     Fest-wide cut-off timestamp. New registrations will be blocked across all events after this moment.
                   </p>
                 </div>
               </div>
               {savingKey === 'registration_deadline' && (
-                <span className="text-xs text-[#FFB3B1] font-medium animate-pulse flex items-center gap-1 shrink-0 ml-4">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C8102E]" />
+                <span className="text-xs text-[#F4DD9F] font-medium animate-pulse flex items-center gap-1 shrink-0 ml-4">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#CC892F]" />
                   Saving…
                 </span>
               )}
             </div>
 
             <div className="max-w-md space-y-2">
-              <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+              <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                 Deadline Date &amp; Time
               </label>
               <input
                 type="datetime-local"
                 value={deadlineInput}
                 onChange={(e) => handleDeadlineChange(e.target.value)}
-                className="h-12 w-full bg-[#161B2A] border border-white/10 rounded-lg px-3 text-[#DDE2F6] text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                className="h-12 w-full bg-[#141311] border border-[#3A291B]/90 rounded-lg px-3 text-[#F5EFE6] text-sm font-mono focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
               />
               {settings.registration_deadline && (
-                <p className="text-xs text-[#8A94A8]">
+                <p className="text-xs text-[#A89F91]">
                   Stored ISO:{' '}
-                  <span className="font-mono text-[#DDE2F6]/70">{settings.registration_deadline}</span>
+                  <span className="font-mono text-[#F5EFE6]/70">{settings.registration_deadline}</span>
                 </p>
               )}
             </div>
           </div>
 
           {/* Card: Fest Branding */}
-          <div className="bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl p-6">
+          <div className="bg-[#0D0C0A]/80 backdrop-blur-xl border border-[#3A291B]/80 rounded-2xl p-6">
             <div className="flex items-start justify-between mb-4">
               <div className="flex items-start gap-3">
-                <span className="material-symbols-outlined text-[#C8102E] text-xl mt-0.5">
+                <span className="material-symbols-outlined text-[#CC892F] text-xl mt-0.5">
                   military_tech
                 </span>
                 <div>
-                  <h2 className="font-serif text-base text-[#DDE2F6]">Fest Name</h2>
-                  <p className="text-xs text-[#8A94A8] mt-0.5">
+                  <h2 className="font-serif text-base text-[#F5EFE6]">Fest Name</h2>
+                  <p className="text-xs text-[#A89F91] mt-0.5">
                     Global title displayed across headers and event badges.
                   </p>
                 </div>
               </div>
               {savingKey === 'fest_name' && (
-                <span className="text-xs text-[#FFB3B1] font-medium animate-pulse flex items-center gap-1 shrink-0 ml-4">
-                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#C8102E]" />
+                <span className="text-xs text-[#F4DD9F] font-medium animate-pulse flex items-center gap-1 shrink-0 ml-4">
+                  <span className="inline-block w-1.5 h-1.5 rounded-full bg-[#CC892F]" />
                   Saving…
                 </span>
               )}
             </div>
 
             <div className="max-w-md space-y-2">
-              <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+              <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                 Platform Title
               </label>
               <div className="flex gap-2">
@@ -196,13 +196,13 @@ export default function AdminSettingsPage() {
                   value={festNameInput}
                   onChange={(e) => setFestNameInput(e.target.value)}
                   placeholder="e.g. FEST — NCC Fest 2025"
-                  className="h-12 flex-1 bg-[#161B2A] border border-white/10 rounded-lg px-3 text-[#DDE2F6] text-sm focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+                  className="h-12 flex-1 bg-[#141311] border border-[#3A291B]/90 rounded-lg px-3 text-[#F5EFE6] text-sm focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
                 />
                 <button
                   type="button"
                   onClick={() => saveSetting('fest_name', festNameInput)}
                   disabled={savingKey === 'fest_name'}
-                  className="h-10 self-center px-5 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_16px_rgba(200,16,46,0.35)] disabled:opacity-50 transition shrink-0"
+                  className="h-10 self-center px-5 gold-gradient-button rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_16px_rgba(204,137,47,0.35)] disabled:opacity-50 transition shrink-0"
                 >
                   Save
                 </button>

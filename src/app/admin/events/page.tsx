@@ -1,146 +1,192 @@
 import Link from 'next/link'
-import { cookies } from 'next/headers'
+import { redirect } from 'next/navigation'
+import { CalendarDays, MapPin, Pencil, Plus, Trophy } from 'lucide-react'
+import { createAdminClient } from '@/lib/supabase/admin'
+import { checkAdmin } from '@/lib/auth/checkRole'
 import DeleteEventButton from '@/components/admin/DeleteEventButton'
+import EventStatusSwitch from '@/components/admin/EventStatusSwitch'
+import { SpotlightCard, ShinyText } from '@/components/reactbits'
+import { Badge } from '@/components/ui/badge'
+import { Button } from '@/components/ui/button'
+
+export const dynamic = 'force-dynamic'
 
 const DIVISION_COLORS: Record<string, string> = {
-  SD: 'bg-blue-500/15 border border-blue-500/30 text-blue-400',
-  SW: 'bg-purple-500/15 border border-purple-500/30 text-purple-400',
-  JD: 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400',
-  JW: 'bg-pink-500/15 border border-pink-500/30 text-pink-400',
-}
-
-async function getEvents() {
-  const cookieStore = cookies()
-  const baseUrl = process.env.NEXT_PUBLIC_APP_URL || 'http://localhost:3000'
-  const res = await fetch(`${baseUrl}/api/admin/events`, {
-    headers: { Cookie: cookieStore.toString() },
-    cache: 'no-store',
-  })
-  if (!res.ok) return []
-  const data = await res.json()
-  return Array.isArray(data) ? data : []
+  SD: 'bg-[#242321] border border-[#CC892F]/50 text-[#F4DD9F]',
+  SW: 'bg-[#242321] border border-[#E3B464]/50 text-[#E3B464]',
+  JD: 'bg-[#242321] border border-emerald-500/35 text-emerald-300',
+  JW: 'bg-[#242321] border border-amber-500/35 text-amber-200',
 }
 
 export default async function AdminEventsPage() {
-  const events = await getEvents()
+  const admin = await checkAdmin()
+  if (!admin) redirect('/unauthorized')
+
+  const adminClient = createAdminClient()
+  const { data: events } = await adminClient
+    .from('events')
+    .select(`
+      id, title, venue, event_date, event_time, fee,
+      participation_type, eligible_divisions, is_active, created_at,
+      sub_categories (
+        id,
+        name,
+        categories (
+          id,
+          name
+        )
+      ),
+      event_division_instances (id, division, status),
+      registrations (count)
+    `)
+    .order('created_at', { ascending: false })
+
+  const eventList = Array.isArray(events) ? events : []
 
   return (
-    <div className="space-y-6">
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
+    <div className="max-w-6xl mx-auto space-y-6">
+      <div className="flex flex-col sm:flex-row sm:items-end justify-between gap-4 border-b border-[#3A291B]/80 pb-5">
         <div>
-          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#C8102E] block mb-1">
+          <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#CC892F] block mb-1">
             Command Center
           </span>
-          <h1 className="text-2xl font-serif text-[#DDE2F6]">Event Operations Directory</h1>
-          <p className="text-xs text-[#8A94A8] mt-1">
-            Manage competitive wings, eligible cadres, and operational divisions.
+          <h1 className="text-3xl font-serif text-[#F5EFE6]">
+            Event <ShinyText text="Operations" speed={5} className="font-serif" />
+          </h1>
+          <p className="text-xs text-[#A89F91] mt-1">
+            Manage competitive disciplines, eligible divisions, fees, and registration counts.
           </p>
         </div>
-        <Link
-          href="/admin/events/new"
-          className="inline-flex items-center gap-2 h-11 px-6 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_20px_rgba(200,16,46,0.35)] transition shrink-0"
-        >
-          <span className="material-symbols-outlined text-[18px]">add</span>
-          Create Event
+        <Link href="/admin/events/new" className="shrink-0">
+          <Button size="sm">
+            <Plus className="w-4 h-4" />
+            Create Event
+          </Button>
         </Link>
       </div>
 
-      <div className="bg-[#0D1321]/80 backdrop-blur-xl border border-white/8 rounded-2xl shadow-2xl overflow-hidden">
+      <SpotlightCard className="overflow-hidden">
         <div className="overflow-x-auto">
-          <table className="min-w-full divide-y divide-white/5 text-left">
-            <thead className="bg-[#161B2A]/90 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+          <table className="min-w-full divide-y divide-[#3A291B]/70 text-left">
+            <thead className="bg-[#141311]/95 text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
               <tr>
-                <th className="px-6 py-4">Title &amp; Venue</th>
-                <th className="px-6 py-4">Category</th>
-                <th className="px-6 py-4">Eligibility</th>
-                <th className="px-6 py-4">Division Status</th>
-                <th className="px-6 py-4">Registrations</th>
+                <th className="px-6 py-4">Event &amp; Details</th>
+                <th className="px-5 py-4">Category</th>
+                <th className="px-5 py-4">Eligibility</th>
+                <th className="px-5 py-4">Status</th>
+                <th className="px-5 py-4">Registrations</th>
                 <th className="px-6 py-4 text-right">Actions</th>
               </tr>
             </thead>
-            <tbody className="divide-y divide-white/5 text-xs text-[#DDE2F6]">
-              {events.length === 0 && (
+            <tbody className="divide-y divide-[#3A291B]/60 text-xs text-[#F5EFE6]">
+              {eventList.length === 0 && (
                 <tr>
-                  <td colSpan={6} className="px-6 py-12 text-center text-[#8A94A8]">
-                    <span className="material-symbols-outlined text-4xl block mb-2 opacity-30">
-                      event_busy
-                    </span>
-                    No competitive operations registered.
+                  <td colSpan={6} className="px-6 py-14 text-center text-[#A89F91]">
+                    <Trophy className="w-9 h-9 mx-auto mb-2 opacity-35 text-[#CC892F]" />
+                    No competitive operations registered yet.
                   </td>
                 </tr>
               )}
-              {(Array.isArray(events) ? events : []).map((event: any) => (
-                <tr key={event.id} className="hover:bg-white/[0.02] transition-colors">
-                  <td className="px-6 py-4">
-                    <div className="font-semibold text-sm text-[#DDE2F6]">{event.title}</div>
-                    {event.venue && (
-                      <div className="text-[11px] text-[#8A94A8] flex items-center gap-1 mt-0.5">
-                        <span className="material-symbols-outlined text-[14px]">location_on</span>
-                        {event.venue}
+              {eventList.map((event: any) => {
+                const categoryName = event.sub_categories?.categories?.name || 'Uncategorized'
+                const subCategoryName = event.sub_categories?.name
+                const regCount = Array.isArray(event.registrations)
+                  ? Number(event.registrations[0]?.count ?? 0)
+                  : 0
+                const feeNum = Number(event.fee ?? 0)
+
+                return (
+                  <tr key={event.id} className="hover:bg-[#242321]/40 transition-colors">
+                    <td className="px-6 py-4">
+                      <div className="flex items-center gap-2 flex-wrap">
+                        <span className="font-semibold text-sm text-[#F4DD9F]">
+                          {event.title || 'Untitled Event'}
+                        </span>
+                        <Badge variant="outline" className="text-[9px] capitalize">
+                          {event.participation_type || 'individual'}
+                        </Badge>
+                        {event.is_active === false && (
+                          <Badge variant="danger" className="text-[9px]">
+                            Inactive
+                          </Badge>
+                        )}
                       </div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="font-medium text-[#DDE2F6]">{event.categories?.name ?? '—'}</div>
-                    {event.sub_categories && (
-                      <div className="text-[10px] text-[#8A94A8]">{event.sub_categories.name}</div>
-                    )}
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1">
-                      {(event.eligible_divisions ?? []).map((div: string) => (
-                        <span
-                          key={div}
-                          className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
-                            DIVISION_COLORS[div] ?? 'bg-white/5 text-[#8A94A8]'
-                          }`}
-                        >
-                          {div}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <div className="flex flex-wrap gap-1">
-                      {(event.event_division_instances ?? []).map((inst: any) => (
-                        <span
-                          key={inst.id}
-                          className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-semibold border ${
-                            inst.status === 'active'
-                              ? 'bg-emerald-500/15 border-emerald-500/30 text-emerald-400'
-                              : 'bg-red-500/15 border-red-500/30 text-red-400 line-through'
-                          }`}
-                        >
-                          {inst.division}
-                        </span>
-                      ))}
-                    </div>
-                  </td>
-                  <td className="px-6 py-4">
-                    <span className="h-6 px-2.5 inline-flex items-center bg-white/5 rounded-full font-bold text-[#DDE2F6]">
-                      {event._count?.registrations ?? 0}
-                    </span>
-                  </td>
-                  <td className="px-6 py-4 text-right">
-                    <div className="flex items-center justify-end gap-3">
-                      <Link
-                        href={`/admin/events/${event.id}/edit`}
-                        className="h-8 px-3 rounded-full bg-white/5 hover:bg-white/10 text-[#ADC6FF] hover:text-white transition inline-flex items-center text-xs font-semibold"
-                      >
-                        Edit
-                      </Link>
-                      <DeleteEventButton
+                      <div className="text-[11px] text-[#A89F91] flex items-center gap-3 mt-1 flex-wrap">
+                        <span>{feeNum > 0 ? `₹${feeNum}` : 'Free'}</span>
+                        {event.event_date && (
+                          <span className="inline-flex items-center gap-1">
+                            <CalendarDays className="w-3 h-3 text-[#CC892F]" />
+                            {new Date(event.event_date).toLocaleDateString('en-IN', {
+                              day: 'numeric',
+                              month: 'short',
+                            })}
+                          </span>
+                        )}
+                        {event.venue && (
+                          <span className="inline-flex items-center gap-1">
+                            <MapPin className="w-3 h-3 text-[#CC892F]" />
+                            {event.venue}
+                          </span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="font-medium text-[#F5EFE6]">{categoryName}</div>
+                      {subCategoryName && (
+                        <div className="text-[10px] text-[#A89F91] mt-0.5">{subCategoryName}</div>
+                      )}
+                    </td>
+                    <td className="px-5 py-4">
+                      <div className="flex flex-wrap gap-1">
+                        {(event.eligible_divisions ?? []).length > 0 ? (
+                          event.eligible_divisions.map((div: string) => (
+                            <span
+                              key={div}
+                              className={`inline-block px-2 py-0.5 rounded-full text-[10px] font-bold ${
+                                DIVISION_COLORS[div] ?? 'bg-[#242321] text-[#A89F91]'
+                              }`}
+                            >
+                              {div}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-[10px] text-[#A89F91]">All</span>
+                        )}
+                      </div>
+                    </td>
+                    <td className="px-5 py-4">
+                      <EventStatusSwitch
                         eventId={event.id}
-                        hasRegistrations={(event._count?.registrations ?? 0) > 0}
+                        initialActive={event.is_active !== false}
                       />
-                    </div>
-                  </td>
-                </tr>
-              ))}
+                    </td>
+                    <td className="px-5 py-4">
+                      <span className="h-6 px-2.5 inline-flex items-center bg-[#242321] border border-[#3A291B] rounded-full font-bold text-[#F4DD9F]">
+                        {regCount}
+                      </span>
+                    </td>
+                    <td className="px-6 py-4 text-right">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/admin/events/${event.id}/edit`}
+                          className="h-8 px-3 rounded-full bg-[#242321] hover:bg-[#3A291B]/70 border border-[#64401F]/60 text-[#F4DD9F] transition inline-flex items-center gap-1.5 text-[11px] font-semibold"
+                        >
+                          <Pencil className="w-3 h-3" />
+                          Edit
+                        </Link>
+                        <DeleteEventButton
+                          eventId={event.id}
+                          hasRegistrations={regCount > 0}
+                        />
+                      </div>
+                    </td>
+                  </tr>
+                )
+              })}
             </tbody>
           </table>
         </div>
-      </div>
+      </SpotlightCard>
     </div>
   )
 }

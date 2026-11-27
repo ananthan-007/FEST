@@ -11,7 +11,10 @@ export default async function EventsPage() {
     const { data: rawEvents } = await supabase
       .from('events')
       .select(`
-        *,
+        id, title, description, poster_url,
+        participation_type, eligible_divisions,
+        fee, event_date, event_time, venue,
+        conflict_alert_enabled, is_active,
         sub_categories (
           id,
           name,
@@ -26,7 +29,6 @@ export default async function EventsPage() {
           status
         )
       `)
-      .eq('is_active', true)
       .order('created_at', { ascending: true })
 
     if (rawEvents) {

@@ -1,9 +1,12 @@
 'use client'
 
 import React, { useState, useEffect, useCallback } from 'react'
-import { useRouter } from 'next/navigation'
 import Link from 'next/link'
+import { AlertTriangle, ArrowRight, CheckCircle2, Verified, Wallet, X } from 'lucide-react'
 import RazorpayCheckout from './RazorpayCheckout'
+import { SpotlightCard } from '@/components/reactbits'
+import { Button } from '@/components/ui/button'
+import { Input } from '@/components/ui/input'
 
 interface EventData {
   id: string
@@ -42,7 +45,6 @@ export default function RegistrationForm({
   event: EventData
   userProfile: UserProfile
 }) {
-  const router = useRouter()
   const isTeam = event.participationType === 'team'
   const minMembers = event.teamMin ?? 1
   const maxMembers = event.teamMax ?? 5
@@ -59,12 +61,9 @@ export default function RegistrationForm({
 
   const [loading, setLoading] = useState(false)
   const [errorMessage, setErrorMessage] = useState<string | null>(null)
-
-  // Stage 2 conflict modal state
   const [conflicts, setConflicts] = useState<ConflictingEvent[] | null>(null)
   const [showConflictModal, setShowConflictModal] = useState(false)
 
-  // Payment state
   const [paymentData, setPaymentData] = useState<{
     registrationId: string
     razorpayOrderId?: string
@@ -76,7 +75,6 @@ export default function RegistrationForm({
 
   const [paymentSuccess, setPaymentSuccess] = useState(false)
 
-  // Member email lookup with debounce
   const lookupMemberEmail = useCallback(async (index: number, email: string) => {
     if (!email || !email.includes('@')) {
       setMembers((prev) => {
@@ -122,7 +120,6 @@ export default function RegistrationForm({
     }
   }, [])
 
-  // Debounced input change
   useEffect(() => {
     const timers: NodeJS.Timeout[] = []
     members.forEach((m, idx) => {
@@ -202,7 +199,6 @@ export default function RegistrationForm({
       const data = await res.json()
 
       if (res.status === 409 && data.conflict) {
-        // Stage 2 Conflict Alert
         setConflicts(data.conflicting_events || [])
         setShowConflictModal(true)
         setLoading(false)
@@ -215,7 +211,6 @@ export default function RegistrationForm({
         return
       }
 
-      // Success
       setShowConflictModal(false)
       setPaymentData({
         registrationId: data.registration_id,
@@ -236,60 +231,55 @@ export default function RegistrationForm({
     }
   }
 
-  // If already verified or paid
   if (paymentSuccess) {
     return (
-      <div className="bg-[#0D1321]/80 backdrop-blur-xl rounded-2xl border border-white/8 p-8 text-center max-w-lg mx-auto shadow-2xl">
-        <div className="w-16 h-16 bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
-          <span className="material-symbols-outlined text-3xl">check_circle</span>
+      <SpotlightCard className="p-8 text-center max-w-lg mx-auto">
+        <div className="w-16 h-16 bg-emerald-500/15 border border-emerald-500/35 text-emerald-400 rounded-full flex items-center justify-center mx-auto mb-4">
+          <CheckCircle2 className="w-8 h-8" />
         </div>
-        <h2 className="text-2xl font-serif text-[#DDE2F6] mb-2">Registration Confirmed</h2>
-        <p className="text-sm text-[#8A94A8] mb-6">
-          Cadet credentials established for <strong className="text-[#DDE2F6]">{event.title}</strong>.
+        <h2 className="text-2xl font-serif text-[#F4DD9F] mb-2">Registration Confirmed</h2>
+        <p className="text-sm text-[#A89F91] mb-6">
+          Cadet credentials established for <strong className="text-[#F5EFE6]">{event.title}</strong>.
           Your QR entry pass has been updated on your dashboard.
         </p>
-        <Link
-          href="/dashboard"
-          className="inline-block py-3 px-8 bg-[#C8102E] hover:bg-[#A00B22] text-white font-semibold rounded-full shadow-[0_0_20px_rgba(200,16,46,0.4)] transition text-xs uppercase tracking-wider"
-        >
-          View Entry Pass →
+        <Link href="/dashboard">
+          <Button>View Entry Pass →</Button>
         </Link>
-      </div>
+      </SpotlightCard>
     )
   }
 
-  // If payment order created and needs checkout
   if (paymentData?.razorpayOrderId && paymentData?.amount) {
     return (
-      <div className="bg-[#0D1321]/80 backdrop-blur-xl rounded-2xl border border-white/8 p-8 max-w-lg mx-auto shadow-2xl">
+      <SpotlightCard className="p-8 max-w-lg mx-auto">
         <div className="text-center mb-6">
-          <div className="w-14 h-14 bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] rounded-full flex items-center justify-center mx-auto mb-3">
-            <span className="material-symbols-outlined text-2xl">account_balance_wallet</span>
+          <div className="w-14 h-14 bg-[#CC892F]/15 border border-[#CC892F]/40 text-[#F4DD9F] rounded-full flex items-center justify-center mx-auto mb-3">
+            <Wallet className="w-6 h-6" />
           </div>
-          <h2 className="text-2xl font-serif text-[#DDE2F6]">Payment Verification</h2>
-          <p className="text-[#8A94A8] text-xs mt-1">
+          <h2 className="text-2xl font-serif text-[#F4DD9F]">Payment Verification</h2>
+          <p className="text-[#A89F91] text-xs mt-1">
             Complete transaction to finalize registration credentials.
           </p>
         </div>
 
-        <div className="bg-[#161B2A] rounded-xl p-4 mb-6 border border-white/5 space-y-2 text-sm">
+        <div className="bg-[#141311] rounded-xl p-4 mb-6 border border-[#3A291B]/80 space-y-2 text-sm">
           <div className="flex justify-between">
-            <span className="text-[#8A94A8]">Operation</span>
-            <span className="font-semibold text-[#DDE2F6]">{event.title}</span>
+            <span className="text-[#A89F91]">Operation</span>
+            <span className="font-semibold text-[#F5EFE6]">{event.title}</span>
           </div>
           <div className="flex justify-between">
-            <span className="text-[#8A94A8]">Leader</span>
-            <span className="font-medium text-[#DDE2F6]">{userProfile.displayName}</span>
+            <span className="text-[#A89F91]">Leader</span>
+            <span className="font-medium text-[#F5EFE6]">{userProfile.displayName}</span>
           </div>
           {isTeam && (
             <div className="flex justify-between">
-              <span className="text-[#8A94A8]">Squad Call-sign</span>
-              <span className="font-medium text-[#DDE2F6]">{teamName}</span>
+              <span className="text-[#A89F91]">Squad Call-sign</span>
+              <span className="font-medium text-[#F5EFE6]">{teamName}</span>
             </div>
           )}
-          <div className="border-t border-white/10 pt-2 flex justify-between font-bold text-[#DDE2F6]">
+          <div className="border-t border-[#3A291B]/70 pt-2 flex justify-between font-bold text-[#F5EFE6]">
             <span>Total Payable</span>
-            <span className="text-[#FFB3B1]">₹{(paymentData.amount / 100).toFixed(2)}</span>
+            <span className="text-[#F4DD9F]">₹{(paymentData.amount / 100).toFixed(2)}</span>
           </div>
         </div>
 
@@ -303,26 +293,26 @@ export default function RegistrationForm({
             setPaymentSuccess(true)
           }}
         />
-      </div>
+      </SpotlightCard>
     )
   }
 
   const feeNumber = Number(event.fee ?? 0)
 
   return (
-    <div className="bg-[#0D1321]/80 backdrop-blur-xl rounded-2xl border border-white/8 p-6 sm:p-8 shadow-2xl">
+    <SpotlightCard className="p-6 sm:p-8">
       {errorMessage && (
-        <div className="mb-6 flex items-center gap-2 p-4 rounded-xl bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] text-sm">
-          <span className="material-symbols-outlined text-lg">error</span>
+        <div className="mb-6 flex items-center gap-2 p-4 rounded-xl bg-red-500/12 border border-red-500/30 text-red-300 text-sm">
+          <AlertTriangle className="w-4 h-4 shrink-0" />
           <span>{errorMessage}</span>
         </div>
       )}
 
-      <div className="mb-6 border-b border-white/10 pb-4">
-        <h2 className="text-xl font-serif text-[#DDE2F6]">
+      <div className="mb-6 border-b border-[#3A291B]/70 pb-4">
+        <h2 className="text-xl font-serif text-[#F4DD9F]">
           {isTeam ? 'Squad Manifest' : 'Cadet Registration'}
         </h2>
-        <p className="text-xs text-[#8A94A8] mt-1">
+        <p className="text-xs text-[#A89F91] mt-1">
           {isTeam
             ? `Enlist your squad (${minMembers} to ${maxMembers} cadets). You are designated Squad Leader.`
             : 'Confirm your individual operational deployment for this event.'}
@@ -338,16 +328,16 @@ export default function RegistrationForm({
       >
         {isTeam && (
           <div>
-            <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8] mb-2">
+            <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91] mb-2">
               Squad Name / Call-Sign *
             </label>
-            <input
+            <Input
               type="text"
               required
               value={teamName}
               onChange={(e) => setTeamName(e.target.value)}
-              placeholder="e.g. Victor Squad"
-              className="h-12 w-full bg-[#161B2A] border border-white/10 rounded-full px-5 text-[#DDE2F6] placeholder-[#8A94A8]/60 text-sm focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+              placeholder="e.g. Dhruva Alpha"
+              className="h-12"
             />
           </div>
         )}
@@ -355,52 +345,47 @@ export default function RegistrationForm({
         {isTeam && (
           <div className="space-y-3">
             <div className="flex justify-between items-center">
-              <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+              <label className="block text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91]">
                 Squad Roster ({members.length}/{maxMembers})
               </label>
               {members.length < maxMembers && (
-                <button
-                  type="button"
-                  onClick={addMemberSlot}
-                  className="h-7 px-3 bg-[#161B2A] border border-white/10 hover:border-[#C8102E]/40 rounded-full text-[10px] font-semibold uppercase tracking-wider text-[#ADC6FF] hover:text-white transition"
-                >
+                <Button type="button" variant="bronze" size="sm" onClick={addMemberSlot}>
                   + Add Member
-                </button>
+                </Button>
               )}
             </div>
 
             {members.map((member, idx) => (
               <div
                 key={idx}
-                className="bg-[#161B2A]/90 p-3.5 rounded-xl border border-white/5 space-y-2"
+                className="bg-[#141311] p-3.5 rounded-xl border border-[#3A291B]/80 space-y-2"
               >
                 <div className="flex gap-2 items-center">
                   <div className="flex-1">
-                    <input
+                    <Input
                       type="email"
                       required
                       placeholder={`Cadet ${idx + 1} Registered Email`}
                       value={member.email}
                       onChange={(e) => handleMemberEmailChange(idx, e.target.value)}
-                      className="h-10 w-full bg-[#0D1321] border border-white/10 rounded-lg px-3 text-[#DDE2F6] placeholder-[#8A94A8]/50 text-xs focus:outline-none focus:border-[#C8102E]"
+                      className="h-10 text-xs"
                     />
                   </div>
                   {members.length > minMembers && (
                     <button
                       type="button"
                       onClick={() => removeMemberSlot(idx)}
-                      className="w-8 h-8 rounded-full flex items-center justify-center text-[#8A94A8] hover:text-[#C8102E] hover:bg-white/5 transition"
+                      className="w-8 h-8 rounded-full flex items-center justify-center text-[#A89F91] hover:text-[#F4DD9F] hover:bg-white/5 transition"
                     >
-                      <span className="material-symbols-outlined text-[16px]">close</span>
+                      <X className="w-4 h-4" />
                     </button>
                   )}
                 </div>
 
-                {/* Status indicator */}
                 <div className="text-[10px]">
                   {member.status === 'loading' && (
-                    <span className="text-[#8A94A8] flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#ADC6FF] animate-pulse" />
+                    <span className="text-[#A89F91] flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#E3B464] animate-pulse" />
                       Verifying cadet registry…
                     </span>
                   )}
@@ -411,8 +396,8 @@ export default function RegistrationForm({
                     </span>
                   )}
                   {member.status === 'not_found' && (
-                    <span className="text-[#FFB3B1] font-medium flex items-center gap-1">
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#C8102E]" />
+                    <span className="text-red-300 font-medium flex items-center gap-1">
+                      <span className="w-1.5 h-1.5 rounded-full bg-red-400" />
                       Cadet record not found
                     </span>
                   )}
@@ -422,75 +407,61 @@ export default function RegistrationForm({
           </div>
         )}
 
-        {/* Summary Card */}
-        <div className="bg-[#161B2A] rounded-xl p-4 border border-white/5 text-xs space-y-2">
-          <div className="flex justify-between text-[#8A94A8]">
+        <div className="bg-[#141311] rounded-xl p-4 border border-[#3A291B]/80 text-xs space-y-2">
+          <div className="flex justify-between text-[#A89F91]">
             <span>Participation Type:</span>
-            <span className="font-semibold text-[#DDE2F6] capitalize">{event.participationType}</span>
+            <span className="font-semibold text-[#F5EFE6] capitalize">{event.participationType}</span>
           </div>
-          <div className="flex justify-between text-[#8A94A8]">
+          <div className="flex justify-between text-[#A89F91]">
             <span>Registration Fee:</span>
-            <span className="font-semibold text-[#DDE2F6]">
+            <span className="font-semibold text-[#F4DD9F]">
               {feeNumber > 0 ? `₹${feeNumber.toFixed(2)}` : 'Complimentary'}
             </span>
           </div>
         </div>
 
-        <button
-          type="submit"
-          disabled={loading}
-          className="h-12 w-full rounded-full font-semibold text-white bg-[#C8102E] hover:bg-[#A00B22] shadow-[0_0_20px_rgba(200,16,46,0.35)] transition disabled:opacity-50 text-xs uppercase tracking-wider flex items-center justify-center gap-2"
-        >
+        <Button type="submit" disabled={loading} size="lg" className="w-full h-12">
           {loading ? (
             'Processing Enlistment…'
           ) : feeNumber > 0 ? (
             <>
               Proceed to Payment
-              <span className="material-symbols-outlined text-[18px]">arrow_forward</span>
+              <ArrowRight className="w-4 h-4" />
             </>
           ) : (
             <>
               Confirm Registration
-              <span className="material-symbols-outlined text-[18px]">verified</span>
+              <Verified className="w-4 h-4" />
             </>
           )}
-        </button>
+        </Button>
       </form>
 
-      {/* Stage 2 Conflict Modal */}
       {showConflictModal && conflicts && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4">
-          <div className="bg-[#0D1321] border border-amber-500/30 rounded-2xl shadow-2xl max-w-md w-full p-6 text-left">
-            <div className="w-12 h-12 rounded-full bg-amber-500/15 border border-amber-500/30 text-amber-400 flex items-center justify-center mb-4">
-              <span className="material-symbols-outlined text-2xl">warning</span>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/80 backdrop-blur-md p-4">
+          <div className="bg-[#0D0C0A] border border-[#CC892F]/50 rounded-2xl shadow-2xl max-w-md w-full p-6 text-left">
+            <div className="w-12 h-12 rounded-full bg-[#CC892F]/15 border border-[#CC892F]/40 text-[#E3B464] flex items-center justify-center mb-4">
+              <AlertTriangle className="w-6 h-6" />
             </div>
-            <h3 className="text-lg font-serif text-[#DDE2F6] mb-2">Schedule Conflict Detected</h3>
-            <p className="text-xs text-[#8A94A8] leading-relaxed mb-5">
+            <h3 className="text-lg font-serif text-[#F4DD9F] mb-2">Schedule Conflict Detected</h3>
+            <p className="text-xs text-[#A89F91] leading-relaxed mb-5">
               You are currently registered for{' '}
-              <strong className="text-amber-400">
+              <strong className="text-[#E3B464]">
                 {conflicts.map((c) => c.title).join(', ')}
               </strong>{' '}
               which runs concurrently with this operation. Do you still intend to proceed?
             </p>
             <div className="flex gap-3 justify-end">
-              <button
-                type="button"
-                onClick={() => setShowConflictModal(false)}
-                className="h-10 px-5 rounded-full border border-white/10 text-xs font-semibold text-[#8A94A8] hover:text-[#DDE2F6] hover:bg-white/5 transition"
-              >
+              <Button type="button" variant="outline" size="sm" onClick={() => setShowConflictModal(false)}>
                 Abort
-              </button>
-              <button
-                type="button"
-                onClick={() => handleSubmit(true)}
-                className="h-10 px-6 bg-amber-600 hover:bg-amber-500 rounded-full text-xs font-bold text-black uppercase tracking-wider shadow transition"
-              >
+              </Button>
+              <Button type="button" size="sm" onClick={() => handleSubmit(true)}>
                 Proceed Anyway
-              </button>
+              </Button>
             </div>
           </div>
         </div>
       )}
-    </div>
+    </SpotlightCard>
   )
 }

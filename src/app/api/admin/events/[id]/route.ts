@@ -47,7 +47,9 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     team_fixed,
     institution_restriction,
     conflict_alert_enabled,
+    is_active,
     sub_category_id,
+    prize_pools,
   } = body
 
   const adminClient = createAdminClient()
@@ -77,6 +79,7 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     updateData.institution_restriction = mapped
   }
   if (conflict_alert_enabled !== undefined) updateData.conflict_alert_enabled = !!conflict_alert_enabled
+  if (is_active !== undefined) updateData.is_active = !!is_active
   if (sub_category_id !== undefined) updateData.subcategory_id = sub_category_id
   if (eligible_divisions !== undefined) updateData.eligible_divisions = eligible_divisions
 
@@ -114,14 +117,53 @@ export async function PUT(req: Request, { params }: { params: Promise<{ id: stri
     }
 
     // Cancel removed divisions
-    Array.from(existingDivMap.entries()).forEach(([div, inst]: [string, any]) => {
+    for (const [div, inst] of Array.from(existingDivMap.entries())) {
       if (!eligible_divisions.includes(div) && inst.status !== 'cancelled') {
-        adminClient.from('event_division_instances').update({ status: 'cancelled' }).eq('id', inst.id)
+        await adminClient.from('event_division_instances').update({ status: 'cancelled' }).eq('id', inst.id)
       }
-    })
+    }
+  }
+
+  // Sync prize pools when provided
+  if (Array.isArray(prize_pools)) {
+    await adminClient.from('prize_pool_groups').delete().eq('event_id', id)
+    if (prize_pools.length > 0) {
+      const pps = prize_pools.map((p: Record<string, unknown>) => ({
+        event_id: id,
+        name: p.label || p.name || 'Prize Group',
+        divisions: p.divisions || [],
+        prize_1st: p.first_prize ?? p.prize_1st ?? null,
+        prize_2nd: p.second_prize ?? p.prize_2nd ?? null,
+        prize_3rd: p.third_prize ?? p.prize_3rd ?? null,
+      }))
+      await adminClient.from('prize_pool_groups').insert(pps)
+    }
   }
 
   return NextResponse.json(updatedEvent)
+}
+
+export async function PATCH(req: Request, { params }: { params: Promise<{ id: string }> }) {
+  const user = await checkAdmin()
+  if (!user) return NextResponse.json({ error: 'Forbidden' }, { status: 403 })
+
+  const { id } = await params
+  const body = await req.json()
+
+  if (typeof body.is_active !== 'boolean') {
+    return NextResponse.json({ error: 'is_active boolean is required' }, { status: 400 })
+  }
+
+  const adminClient = createAdminClient()
+  const { data, error } = await adminClient
+    .from('events')
+    .update({ is_active: body.is_active })
+    .eq('id', id)
+    .select('id, is_active')
+    .single()
+
+  if (error) return NextResponse.json({ error: error.message }, { status: 500 })
+  return NextResponse.json(data)
 }
 
 export async function DELETE(_req: Request, { params }: { params: Promise<{ id: string }> }) {

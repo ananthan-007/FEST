@@ -12,7 +12,7 @@ export async function GET() {
       .select(`
         id, title, description, poster_url, event_date, event_time,
         venue, fee, participation_type, eligible_divisions,
-        team_min, team_max, subcategory_id,
+        team_min, team_max, is_active, subcategory_id,
         sub_categories (
           id,
           name,

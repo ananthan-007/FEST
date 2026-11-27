@@ -8,6 +8,16 @@ const nextConfig = {
   compress: true,
   // Disable X-Powered-By header (minor security + perf)
   poweredByHeader: false,
+  // Allow Next.js <Image> to load from Supabase storage
+  images: {
+    remotePatterns: [
+      {
+        protocol: 'https',
+        hostname: '*.supabase.co',
+        pathname: '/storage/v1/object/public/**',
+      },
+    ],
+  },
 }
 
 export default nextConfig

@@ -1,8 +1,12 @@
 'use client';
 
 import { useState } from 'react';
-import { createClient } from '@/lib/supabase/client';
 import Link from 'next/link';
+import { AlertCircle, CheckCircle2, Lock } from 'lucide-react';
+import { createClient } from '@/lib/supabase/client';
+import { SpotlightCard } from '@/components/reactbits';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
 
 export default function ForgotPasswordPage() {
   const [email, setEmail] = useState('');
@@ -33,76 +37,71 @@ export default function ForgotPasswordPage() {
   if (success) {
     return (
       <div className="min-h-screen flex items-center justify-center bg-space-dark px-4">
-        <div className="w-full max-w-sm bg-[#0D1321]/75 backdrop-blur-xl rounded-2xl border border-white/8 p-7 shadow-2xl text-center space-y-4">
-          <span className="material-symbols-outlined text-5xl text-[#C8102E]">check_circle</span>
-          <h1 className="font-serif text-2xl text-[#DDE2F6]">Transmission Sent</h1>
-          <p className="text-sm text-[#8A94A8]">
+        <SpotlightCard className="w-full max-w-sm p-7 text-center space-y-4">
+          <CheckCircle2 className="w-12 h-12 text-[#E3B464] mx-auto" />
+          <h1 className="font-serif text-2xl gold-gradient-text">Transmission Sent</h1>
+          <p className="text-sm text-[#A89F91]">
             A password reset link has been dispatched to{' '}
-            <span className="text-[#DDE2F6] font-medium">{email}</span>.
+            <span className="text-[#F5EFE6] font-medium">{email}</span>.
             Check your inbox and follow the instructions.
           </p>
           <Link
             href="/auth/login"
-            className="inline-block mt-2 text-sm text-[#ADC6FF] hover:text-white transition"
+            className="inline-block mt-2 text-sm text-[#E3B464] hover:text-[#F4DD9F] transition"
           >
             ← Back to Login
           </Link>
-        </div>
+        </SpotlightCard>
       </div>
     );
   }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-space-dark px-4">
-      <div className="w-full max-w-sm space-y-5 bg-[#0D1321]/75 backdrop-blur-xl rounded-2xl border border-white/8 p-7 shadow-2xl">
-        {/* Header */}
+      <SpotlightCard className="w-full max-w-sm space-y-5 p-7">
         <div className="flex flex-col items-center gap-2 pb-1">
-          <span className="material-symbols-outlined text-5xl text-[#C8102E]">lock</span>
-          <h1 className="font-serif text-2xl text-[#DDE2F6]">RESET ACCESS</h1>
-          <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8]">
+          <div className="w-12 h-12 rounded-2xl bg-[#CC892F]/15 border border-[#CC892F]/40 flex items-center justify-center">
+            <Lock className="w-6 h-6 text-[#E3B464]" />
+          </div>
+          <h1 className="font-serif text-2xl gold-gradient-text">RESET ACCESS</h1>
+          <p className="text-[10px] font-semibold tracking-[0.18em] uppercase text-[#A89F91]">
             CADET IDENTITY RECOVERY
           </p>
         </div>
 
-        {/* Error */}
         {error && (
-          <div className="flex items-center gap-2 bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] text-sm px-4 py-3 rounded-xl">
-            <span className="material-symbols-outlined text-base">error</span>
-            {error}
+          <div className="flex items-center gap-2 bg-red-500/12 border border-red-500/30 text-red-300 text-sm px-4 py-3 rounded-xl">
+            <AlertCircle className="w-4 h-4 shrink-0" />
+            <span>{error}</span>
           </div>
         )}
 
-        {/* Form */}
         <form onSubmit={handleSubmit} className="space-y-4">
           <div>
-            <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#8A94A8] mb-2 ml-5">Email Address</p>
-            <input
+            <p className="text-[10px] font-semibold tracking-[0.14em] uppercase text-[#A89F91] mb-2">
+              Email Address
+            </p>
+            <Input
               id="email"
               type="email"
               required
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               placeholder="you@example.com"
-              className="h-12 w-full bg-[#0D1321]/70 border border-white/10 rounded-full px-5 text-[#DDE2F6] placeholder-[#8A94A8] text-sm focus:outline-none focus:ring-1 focus:ring-[#C8102E]/60"
             />
           </div>
-          <button
-            type="submit"
-            disabled={loading}
-            className="h-12 w-full bg-[#C8102E] hover:bg-[#A00B22] text-white font-semibold rounded-full transition shadow-[0_0_20px_rgba(200,16,46,0.4)] disabled:opacity-60"
-          >
+          <Button type="submit" disabled={loading} className="w-full">
             {loading ? 'Sending…' : 'Send Reset Link'}
-          </button>
+          </Button>
         </form>
 
-        {/* Back link */}
-        <p className="text-center text-sm text-[#8A94A8]">
+        <p className="text-center text-sm text-[#A89F91]">
           Remember your password?{' '}
-          <Link href="/auth/login" className="text-[#ADC6FF] hover:text-white transition">
+          <Link href="/auth/login" className="text-[#E3B464] hover:text-[#F4DD9F] transition">
             Sign In
           </Link>
         </p>
-      </div>
+      </SpotlightCard>
     </div>
   );
 }

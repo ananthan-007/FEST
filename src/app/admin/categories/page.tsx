@@ -209,19 +209,19 @@ export default function AdminCategoriesPage() {
   }
 
   return (
-    <div className="space-y-6 max-w-4xl">
-      <div>
-        <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#C8102E] block mb-1">
+    <div className="space-y-6 max-w-5xl mx-auto">
+      <div className="border-b border-[#3A291B]/80 pb-5">
+        <span className="text-[10px] font-semibold tracking-[0.2em] uppercase text-[#CC892F] block mb-1">
           Taxonomy Command
         </span>
-        <h1 className="text-2xl font-serif text-[#DDE2F6]">Event Categories &amp; Wings</h1>
-        <p className="text-xs text-[#8A94A8] mt-1">
+        <h1 className="text-3xl font-serif text-[#F5EFE6]">Event Categories &amp; Wings</h1>
+        <p className="text-xs text-[#A89F91] mt-1">
           Configure operational classification and competition sub-categories.
         </p>
       </div>
 
       {error && (
-        <div className="p-4 rounded-xl bg-[#C8102E]/15 border border-[#C8102E]/30 text-[#FFB3B1] text-xs flex items-center gap-2">
+        <div className="p-4 rounded-xl bg-[#CC892F]/15 border border-[#CC892F]/30 text-[#F4DD9F] text-xs flex items-center gap-2">
           <span className="material-symbols-outlined text-sm">error</span>
           {error}
         </div>
@@ -234,12 +234,12 @@ export default function AdminCategoriesPage() {
           placeholder="New Category Name (e.g. Cultural, Sports, Tactical Drill)"
           value={newCatName}
           onChange={(e) => setNewCatName(e.target.value)}
-          className="flex-1 h-12 bg-[#0D1321]/80 border border-white/10 rounded-full px-5 text-sm text-[#DDE2F6] placeholder-[#8A94A8]/50 focus:outline-none focus:ring-1 focus:ring-[#C8102E]"
+          className="flex-1 h-12 bg-[#0D0C0A]/80 border border-[#3A291B]/90 rounded-full px-5 text-sm text-[#F5EFE6] placeholder-[#A89F91]/50 focus:outline-none focus:ring-1 focus:ring-[#CC892F]"
         />
         <button
           type="submit"
           disabled={addingCat || !newCatName.trim()}
-          className="h-12 px-6 bg-[#C8102E] hover:bg-[#A00B22] text-white rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_20px_rgba(200,16,46,0.35)] disabled:opacity-50 transition shrink-0"
+          className="h-12 px-6 gold-gradient-button rounded-full text-xs font-semibold uppercase tracking-wider shadow-[0_0_20px_rgba(204,137,47,0.35)] disabled:opacity-50 transition shrink-0"
         >
           {addingCat ? 'Adding…' : '+ Add Category'}
         </button>
@@ -247,12 +247,12 @@ export default function AdminCategoriesPage() {
 
       {/* Category List */}
       {loading ? (
-        <div className="py-12 flex items-center justify-center gap-3 text-[#8A94A8] text-xs uppercase tracking-widest">
-          <div className="w-6 h-6 border-2 border-[#C8102E] border-t-transparent rounded-full animate-spin" />
+        <div className="py-12 flex items-center justify-center gap-3 text-[#A89F91] text-xs uppercase tracking-widest">
+          <div className="w-6 h-6 border-2 border-[#CC892F] border-t-transparent rounded-full animate-spin" />
           Loading Classifications…
         </div>
       ) : categories.length === 0 ? (
-        <div className="p-8 bg-[#0D1321]/60 border border-white/5 rounded-2xl text-center text-[#8A94A8] text-xs">
+        <div className="p-8 bg-[#0D0C0A]/60 border border-[#3A291B]/60 rounded-2xl text-center text-[#A89F91] text-xs">
           No categories found. Define one above to initialize event classification.
         </div>
       ) : (
@@ -265,15 +265,15 @@ export default function AdminCategoriesPage() {
             return (
               <div
                 key={cat.id}
-                className="border border-white/8 rounded-2xl bg-[#0D1321]/80 backdrop-blur-xl shadow-xl overflow-hidden"
+                className="border border-[#3A291B]/80 rounded-2xl bg-[#0D0C0A]/80 backdrop-blur-xl shadow-xl overflow-hidden"
               >
                 {/* Category Header */}
-                <div className="p-4 flex items-center justify-between bg-[#161B2A]/80 border-b border-white/5">
+                <div className="p-4 flex items-center justify-between bg-[#141311]/80 border-b border-[#3A291B]/60">
                   <div className="flex items-center gap-3 flex-1">
                     <button
                       type="button"
                       onClick={() => toggleExpand(cat.id)}
-                      className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/5 text-[#8A94A8] transition"
+                      className="w-7 h-7 flex items-center justify-center rounded-full hover:bg-white/5 text-[#A89F91] transition"
                     >
                       <span
                         className={`material-symbols-outlined text-[18px] transform transition-transform ${
@@ -290,7 +290,7 @@ export default function AdminCategoriesPage() {
                           type="text"
                           value={editingCatName}
                           onChange={(e) => setEditingCatName(e.target.value)}
-                          className="h-9 border border-white/10 bg-[#0D1321] rounded-lg px-3 text-xs text-[#DDE2F6] flex-1 focus:outline-none focus:border-[#C8102E]"
+                          className="h-9 border border-[#3A291B]/90 bg-[#0D0C0A] rounded-lg px-3 text-xs text-[#F5EFE6] flex-1 focus:outline-none focus:border-[#CC892F]"
                           autoFocus
                         />
                         <button
@@ -303,13 +303,13 @@ export default function AdminCategoriesPage() {
                         <button
                           type="button"
                           onClick={() => setEditingCatId(null)}
-                          className="h-8 px-3 bg-white/5 hover:bg-white/10 text-[#8A94A8] text-xs font-semibold rounded-lg"
+                          className="h-8 px-3 bg-white/5 hover:bg-white/10 text-[#A89F91] text-xs font-semibold rounded-lg"
                         >
                           Cancel
                         </button>
                       </div>
                     ) : (
-                      <span className="font-serif text-base text-[#DDE2F6]">{cat.name}</span>
+                      <span className="font-serif text-base text-[#F5EFE6]">{cat.name}</span>
                     )}
                   </div>
 
@@ -321,14 +321,14 @@ export default function AdminCategoriesPage() {
                           setEditingCatId(cat.id)
                           setEditingCatName(cat.name)
                         }}
-                        className="text-xs font-semibold text-[#ADC6FF] hover:text-white transition"
+                        className="text-xs font-semibold text-[#E3B464] hover:text-white transition"
                       >
                         Edit
                       </button>
                       <button
                         type="button"
                         onClick={() => handleDeleteCategory(cat.id, cat.name)}
-                        className="text-xs font-semibold text-[#FFB3B1] hover:text-white transition"
+                        className="text-xs font-semibold text-[#F4DD9F] hover:text-white transition"
                       >
                         Delete
                       </button>
@@ -338,18 +338,18 @@ export default function AdminCategoriesPage() {
 
                 {/* SubCategories Dropdown / Accordion */}
                 {isExpanded && (
-                  <div className="p-5 bg-[#080E1C]/90 space-y-3">
-                    <div className="text-[10px] font-semibold text-[#8A94A8] tracking-[0.14em] uppercase">
+                  <div className="p-5 bg-[#0A0908]/90 space-y-3">
+                    <div className="text-[10px] font-semibold text-[#A89F91] tracking-[0.14em] uppercase">
                       Sub-Categories
                     </div>
 
                     {/* Subcategories list */}
                     {subCats.length === 0 ? (
-                      <div className="text-xs text-[#8A94A8]/60 italic py-1">
+                      <div className="text-xs text-[#A89F91]/60 italic py-1">
                         No sub-categories assigned to this wing.
                       </div>
                     ) : (
-                      <div className="divide-y divide-white/5">
+                      <div className="divide-y divide-[#3A291B]/60">
                         {(Array.isArray(subCats) ? subCats : []).map((sub) => {
                           const isEditingSub = editingSubCatId === sub.id
 
@@ -361,7 +361,7 @@ export default function AdminCategoriesPage() {
                                     type="text"
                                     value={editingSubCatName}
                                     onChange={(e) => setEditingSubCatName(e.target.value)}
-                                    className="h-8 border border-white/10 bg-[#0D1321] rounded px-2.5 text-xs text-[#DDE2F6] flex-1 focus:outline-none focus:border-[#C8102E]"
+                                    className="h-8 border border-[#3A291B]/90 bg-[#0D0C0A] rounded px-2.5 text-xs text-[#F5EFE6] flex-1 focus:outline-none focus:border-[#CC892F]"
                                     autoFocus
                                   />
                                   <button
@@ -374,13 +374,13 @@ export default function AdminCategoriesPage() {
                                   <button
                                     type="button"
                                     onClick={() => setEditingSubCatId(null)}
-                                    className="h-8 px-2.5 bg-white/5 text-[#8A94A8] text-xs rounded"
+                                    className="h-8 px-2.5 bg-white/5 text-[#A89F91] text-xs rounded"
                                   >
                                     Cancel
                                   </button>
                                 </div>
                               ) : (
-                                <span className="text-xs font-medium text-[#DDE2F6]">{sub.name}</span>
+                                <span className="text-xs font-medium text-[#F5EFE6]">{sub.name}</span>
                               )}
 
                               {!isEditingSub && (
@@ -391,7 +391,7 @@ export default function AdminCategoriesPage() {
                                       setEditingSubCatId(sub.id)
                                       setEditingSubCatName(sub.name)
                                     }}
-                                    className="text-xs text-[#ADC6FF] hover:text-white"
+                                    className="text-xs text-[#E3B464] hover:text-white"
                                   >
                                     Edit
                                   </button>
@@ -400,7 +400,7 @@ export default function AdminCategoriesPage() {
                                     onClick={() =>
                                       handleDeleteSubCategory(sub.id, cat.id, sub.name)
                                     }
-                                    className="text-xs text-[#FFB3B1] hover:text-white"
+                                    className="text-xs text-[#F4DD9F] hover:text-white"
                                   >
                                     Delete
                                   </button>
@@ -421,13 +421,13 @@ export default function AdminCategoriesPage() {
                         onChange={(e) =>
                           setNewSubCatNames((prev) => ({ ...prev, [cat.id]: e.target.value }))
                         }
-                        className="flex-1 max-w-sm h-9 border border-white/10 bg-[#0D1321] rounded-full px-4 text-xs text-[#DDE2F6] placeholder-[#8A94A8]/40 focus:outline-none focus:border-[#C8102E]"
+                        className="flex-1 max-w-sm h-9 border border-[#3A291B]/90 bg-[#0D0C0A] rounded-full px-4 text-xs text-[#F5EFE6] placeholder-[#A89F91]/40 focus:outline-none focus:border-[#CC892F]"
                       />
                       <button
                         type="button"
                         onClick={() => handleAddSubCategory(cat.id)}
                         disabled={!newSubCatNames[cat.id]?.trim()}
-                        className="h-9 px-4 bg-[#161B2A] hover:bg-[#242A39] border border-white/10 text-white rounded-full text-xs font-medium disabled:opacity-40 transition-colors"
+                        className="h-9 px-4 bg-[#141311] hover:bg-[#242321] border border-[#3A291B]/90 text-white rounded-full text-xs font-medium disabled:opacity-40 transition-colors"
                       >
                         + Add Sub-Category
                       </button>
